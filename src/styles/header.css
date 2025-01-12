@@ -1,0 +1,39 @@
+
+.Header{    
+    display: flex;
+    justify-content: space-around;
+}
+
+img{
+    width: 150px;
+}
+.Description{
+    /* background-color: limegreen; */
+    padding: 30px;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
+    color: limegreen;
+    border-radius: 20px;
+    font-size: 20px;
+}
+.signin-login{
+    display: flex;
+    gap: 50px;
+    padding: 20px;
+}
+.sign-in-b{
+    background-color: limegreen;
+    border: white;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+}
+.log-in-b{
+    background-color: limegreen;
+    border: white;
+    color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+}
