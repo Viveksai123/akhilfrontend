@@ -19,7 +19,7 @@ function header() {
             <button className='sign-in-b'>Sign in</button>
          </div>
          </Link>
-         <Link to='/sign'>
+         <Link to='/login'>
          <div className="log-in">
             <button className='log-in-b'>Log in</button>
          </div>

@@ -1,44 +1,37 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Signup = () => {
-  const [name, setName] = useState("");
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:4000/api/auth/signup", {
-        name,
+      const response = await axios.post("http://localhost:4000/api/auth/login", {
         email,
         password,
       });
-      setMessage(response.data.message);
-      navigate('/')
-      alert("successfully   signup")
+      setMessage("Login successful!");
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
+  
     } catch (error) {
-      setMessage(error.response?.data?.message || "Sign up failed!");
+      setMessage(error.response?.data?.message || "Login failed!");
     }
   };
 
   return (
     <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         <div>
           <label>Email:</label>
           <input
@@ -57,11 +50,11 @@ const Signup = () => {
             required
           />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
       </form>
       <p>{message}</p>
     </div>
   );
 };
 
-export default Signup;
+export default Login;

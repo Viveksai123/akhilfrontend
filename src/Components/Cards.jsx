@@ -1,107 +1,36 @@
-import React from 'react'
-import img1 from '../assets/images/novotel-img.jpg'
-import img2 from '../assets/images/fortekochi-img.jpeg'
-import img3 from '../assets/images/himali-img.jpeg'
-import '../styles/Cards.css'
+import React from 'react';
+import '../styles/Cards.css';
 
-function Cards() {
+function Cards({ hotels }) {
   return (
-    <>
-<div className="pop">
-    <div className="pop-title"><h1>Most Booked Hotels in Popular Places</h1></div>   
-    <div className='Cards1'>        
-        <div className="card-1">
-            <div className="card-1-images">
-                <img src={img1} alt="" />     
-            </div>
-            <div className="card-1-d">
-                <div className="card-1-n">
-                    <h4>Novotel</h4>
-                    <p>Hyderabad,Telangana</p>                    
+    <div className="pop">
+      <div className="pop-title">
+        <h1>Most Booked Hotels in Popular Places</h1>
+      </div>
+      <div className="Cards1">
+        {hotels.length > 0 ? (
+          hotels.map((hotel) => (
+            <div key={hotel.id} className={hotel.className}>
+              <div className={`${hotel.className}-images`}>
+                <img src={hotel.image} alt={hotel.name} />
+              </div>
+              <div className={`${hotel.className}-d`}>
+                <div className={`${hotel.className}-n`}>
+                  <h4>{hotel.name}</h4>
+                  <p>{hotel.location}</p>
                 </div>
-                <div className="card-1-c">
-                    <h5>16,000/-</h5>
+                <div className={`${hotel.className}-c`}>
+                  <h5>{hotel.price}</h5>
                 </div>
+              </div>
             </div>
-        </div>
-        <div className="card-2">
-            <div className="card-1-images">
-                <img src={img2} alt="" />     
-            </div>
-            <div className="card-2-d">
-                <div className="card-2-n">
-                    <h4>Forte Kochi</h4>
-                    <p>Kochi,Kerala</p>                    
-                </div>
-                <div className="card-2-c">
-                    <h5>23,000/-</h5>
-                </div>
-            </div>
-        </div>
-        <div className="card-3">
-            <div className="card-1-images">
-                <img src={img3} alt="" />     
-            </div>
-            <div className="card-3-d">
-                <div className="card-3-n">
-                    <h4>Hemali Heights</h4>
-                    <p>Manali, Himachal Pradesh</p>                    
-                </div>
-                <div className="card-3-c">
-                    <h5>3,000/-</h5>
-                </div>
-            </div>
-        </div>
+          ))
+        ) : (
+          <p style={{ textAlign: 'center', color: 'gray' }}>No hotels found</p>
+        )}
+      </div>
     </div>
-    <br /><br /><br />
-    <div className="Cards2">
-        <div className="card-2">
-            <div className="card-1-images">
-                <img src={img2} alt="" />     
-            </div>
-            <div className="card-2-d">
-                <div className="card-2-n">
-                    <h4>Forte Kochi</h4>
-                    <p>Kochi,Kerala</p>                    
-                </div>
-                <div className="card-2-c">
-                    <h5>23,000/-</h5>
-                </div>
-            </div>
-        </div>
-    <div className="card-1">
-            <div className="card-1-images">
-                <img src={img1} alt="" />     
-            </div>
-            <div className="card-1-d">
-                <div className="card-1-n">
-                    <h4>Novotel</h4>
-                    <p>Hyderabad,Telangana</p>                    
-                </div>
-                <div className="card-1-c">
-                    <h5>16,000/-</h5>
-                </div>
-            </div>
-        </div>
-        
-        <div className="card-3">
-            <div className="card-1-images">
-                <img src={img3} alt="" />     
-            </div>
-            <div className="card-3-d">
-                <div className="card-3-n">
-                    <h4>Hemali Heights</h4>
-                    <p>Manali, Himachal Pradesh</p>                    
-                </div>
-                <div className="card-3-c">
-                    <h5>3,000/-</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-    </>
-  )
+  );
 }
 
-export default Cards
+export default Cards;
