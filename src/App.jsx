@@ -1,26 +1,13 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/home';
-import SignIn from './pages/signin';
-import Login from './pages/login';
-
+import React from "react";
+import Home from "./home";
 
 function App() {
-    
   return (
-    <>
-
-      <BrowserRouter>
-        <Routes>
-
-          <Route path="/" element={<Home/>} />
-          <Route path="/sign" element={<SignIn/>} />
-          <Route path="/login" element={<Login/>} />
-          
-        </Routes>
-      </BrowserRouter>
-
-    </>
-  )
+    <div className="App">
+      <h1>React Firebase Form</h1>
+      <Home />
+    </div>
+  );
 }
 
-export default App
+export default App;
