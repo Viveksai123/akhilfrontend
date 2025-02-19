@@ -38,29 +38,36 @@ function QuestionList() {
   ]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6">Questions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {['Easy', 'Medium', 'Hard'].map((difficulty) => (
-          <div key={difficulty} className="space-y-4">
-            <h3 className="text-xl font-semibold">{difficulty}</h3>
+    <div className="questions-container">
+    <h2 className="section-title">Challenges</h2>
+    
+    <div className="difficulty-grid">
+      {['Easy', 'Medium', 'Hard'].map((difficulty) => (
+        <div 
+          key={difficulty} 
+          className={`difficulty-section difficulty-${difficulty.toLowerCase()}`}
+        >
+          <h3 className="difficulty-title">{difficulty}</h3>
+          <div className="questions-list">
             {questions
               .filter(q => q.difficulty.toLowerCase() === difficulty.toLowerCase())
               .map(question => (
                 <Link
                   key={question.id}
                   to={`/question/${question.id}`}
-                  className="block p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+                  className="question-link"
                 >
-                  <h4 className="font-medium">{question.title}</h4>
-                  <p className="text-sm text-gray-600">Points: {question.points}</p>
+                  <div className="question-card">
+                    <h4 className="question-title">{question.title}</h4>
+                    <p className="question-points">Points: {question.points}</p>
+                  </div>
                 </Link>
-              ))
-            }
+              ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
+  </div>
   );
 }
 

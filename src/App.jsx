@@ -6,10 +6,11 @@ import QuestionList from './Components/Questions';
 import QuestionDetail from './Components/QuestionDetail';
 import GameOver from './Components/Cards';
 import Leaderboard from './Components/Footer';
-import ProgressDashboard from './Components/ProgressDashboard';
+// import ProgressDashboard from './Components/ProgressDashboard';
 import AchievementSystem from './Components/AchievementSystem';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import './App.css';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -72,9 +73,10 @@ function App() {
               <ProtectedRoute>
                 <>
                   <Navbar />
-                  <ProgressDashboard />
-                  <AchievementSystem />
                   <Leaderboard />
+                  {/* <ProgressDashboard /> */}
+                  <AchievementSystem />
+                  
                 </>
               </ProtectedRoute>
             }

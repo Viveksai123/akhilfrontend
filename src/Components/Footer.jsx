@@ -89,82 +89,66 @@ function Leaderboard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 mt-20">
-      <h2 className="text-2xl font-bold mb-6">Leaderboard</h2>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-50 border-b">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rank
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Username
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Points
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Time Remaining
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Questions Solved
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user) => (
-              <tr 
-                key={user.id}
-                className={`
-                  ${user.isCurrentUser ? 'bg-blue-50' : 'hover:bg-gray-50'}
-                  transition-colors
-                `}
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    {user.rank === 1 && <span className="text-2xl mr-2">🏆</span>}
-                    {user.rank === 2 && <span className="text-2xl mr-2">🥈</span>}
-                    {user.rank === 3 && <span className="text-2xl mr-2">🥉</span>}
-                    <span className="text-sm font-medium text-gray-900">
-                      {user.rank}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="text-sm font-medium text-gray-900">
-                      {user.username}
-                      {user.isCurrentUser && (
-                        <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                          You
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  {user.points}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                  {user.timeRemaining}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                  {user.solvedQuestions?.length || 0}
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
-                  No users have participated yet
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    /* Component JSX */
+<div className="leaderboard-container">
+  <h2 className="leaderboard-title">Leaderboard</h2>
+  <div className="leaderboard-table-container">
+    <table className="leaderboard-table">
+      <thead className="leaderboard-header">
+        <tr>
+          <th>Rank</th>
+          <th>Username</th>
+          <th className="align-right">Points</th>
+          <th className="align-right">Time Remaining</th>
+          <th className="align-right">Questions Solved</th>
+        </tr>
+      </thead>
+      <tbody className="leaderboard-body">
+        {users.map((user) => (
+          <tr 
+            key={user.id}
+            className={`leaderboard-row ${user.isCurrentUser ? 'current-user' : ''}`}
+          >
+            <td className="leaderboard-cell">
+              <div className="rank-cell">
+                {user.rank === 1 && <span className="rank-emoji">🏆</span>}
+                {user.rank === 2 && <span className="rank-emoji">🥈</span>}
+                {user.rank === 3 && <span className="rank-emoji">🥉</span>}
+                <span className="rank-number">{user.rank}</span>
+              </div>
+            </td>
+            <td className="leaderboard-cell">
+              <div className="username-cell">
+                <span className="username-text">
+                  {user.username}
+                  {user.isCurrentUser && (
+                    <span className="current-user-badge">You</span>
+                  )}
+                </span>
+              </div>
+            </td>
+            <td className="leaderboard-cell points-cell">
+              {user.points}
+            </td>
+            <td className="leaderboard-cell time-cell">
+              {user.timeRemaining}
+            </td>
+            <td className="leaderboard-cell questions-cell">
+              {user.solvedQuestions?.length || 0}
+            </td>
+          </tr>
+        ))}
+        {users.length === 0 && (
+          <tr>
+            <td colSpan="5" className="empty-message">
+              No users have participated yet
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
   );
 }
 

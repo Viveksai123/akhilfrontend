@@ -1,6 +1,6 @@
 // src/components/AchievementSystem.js
 import React, { useState, useEffect } from 'react';
-import { doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc, increment } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
 const achievements = [
@@ -42,13 +42,18 @@ function AchievementSystem() {
 
   useEffect(() => {
     const fetchAchievements = async () => {
+      if (!auth.currentUser) return; // Ensure user is authenticated
       try {
-        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
-        const userData = userDoc.data();
-        setUserAchievements(userData.achievements || []);
-        setLoading(false);
+        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserAchievements(userData.achievements || []);
+        }
       } catch (error) {
         console.error('Error fetching achievements:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -57,16 +62,22 @@ function AchievementSystem() {
   }, []);
 
   const unlockAchievement = async (achievementId) => {
-    if (userAchievements.includes(achievementId)) return;
+    if (!auth.currentUser || userAchievements.includes(achievementId)) return;
 
     try {
-      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      const achievement = achievements.find(a => a.id === achievementId);
+      if (!achievement) return;
+
+      await updateDoc(userDocRef, {
         achievements: arrayUnion(achievementId),
-        points: increment(achievements.find(a => a.id === achievementId).points)
+        points: increment(achievement.points)
       });
 
-      setNewAchievement(achievements.find(a => a.id === achievementId));
+      setUserAchievements(prev => [...prev, achievementId]);
+      setNewAchievement(achievement);
       setShowNotification(true);
+
       setTimeout(() => setShowNotification(false), 3000);
     } catch (error) {
       console.error('Error unlocking achievement:', error);
@@ -74,26 +85,22 @@ function AchievementSystem() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 m-4">
-      <h2 className="text-2xl font-bold mb-6">Achievements</h2>
+    <div className="achievements-container">
+      <h2 className="achievements-title">Achievements</h2>
 
       {/* Achievement Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="achievements-grid">
         {achievements.map((achievement) => (
           <div
             key={achievement.id}
-            className={`p-4 rounded-lg border-2 ${
-              userAchievements.includes(achievement.id)
-                ? 'border-green-500 bg-green-50'
-                : 'border-gray-200'
-            }`}
+            className={`achievement-card ${userAchievements.includes(achievement.id) ? 'achievement-earned' : ''}`}
           >
             <div className="flex items-center space-x-3">
-              <span className="text-2xl">{achievement.icon}</span>
+              <span className="achievement-icon">{achievement.icon}</span>
               <div>
-                <h3 className="font-semibold">{achievement.title}</h3>
-                <p className="text-sm text-gray-600">{achievement.description}</p>
-                <p className="text-sm text-blue-600">+{achievement.points} points</p>
+                <h3 className="achievement-title">{achievement.title}</h3>
+                <p className="achievement-description">{achievement.description}</p>
+                <p className="achievement-points">+{achievement.points} points</p>
               </div>
             </div>
           </div>
@@ -102,13 +109,11 @@ function AchievementSystem() {
 
       {/* Achievement Notification */}
       {showNotification && newAchievement && (
-        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
-          <div className="flex items-center space-x-3">
-            <span className="text-2xl">{newAchievement.icon}</span>
-            <div>
-              <h4 className="font-bold">Achievement Unlocked!</h4>
-              <p>{newAchievement.title}</p>
-            </div>
+        <div className="achievement-notification">
+          <span className="achievement-icon">{newAchievement.icon}</span>
+          <div>
+            <h4>Achievement Unlocked!</h4>
+            <p>{newAchievement.title}</p>
           </div>
         </div>
       )}
