@@ -4,7 +4,10 @@ import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import QuestionList from './Components/Questions';
 import QuestionDetail from './Components/QuestionDetail';
+import GameOver from './Components/Cards';
 import Leaderboard from './Components/Footer';
+import ProgressDashboard from './Components/ProgressDashboard';
+import AchievementSystem from './Components/AchievementSystem';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -33,18 +36,22 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
-        <Navbar />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/game-over" element={<GameOver />} />
           <Route
             path="/"
             element={
               <ProtectedRoute>
-                <QuestionList />
+                <>
+                  <Navbar />
+                  <QuestionList />
+                </>
               </ProtectedRoute>
             }
           />
@@ -52,7 +59,10 @@ function App() {
             path="/question/:id"
             element={
               <ProtectedRoute>
-                <QuestionDetail />
+                <>
+                  <Navbar />
+                  <QuestionDetail />
+                </>
               </ProtectedRoute>
             }
           />
@@ -60,7 +70,12 @@ function App() {
             path="/leaderboard"
             element={
               <ProtectedRoute>
-                <Leaderboard />
+                <>
+                  <Navbar />
+                  <ProgressDashboard />
+                  <AchievementSystem />
+                  <Leaderboard />
+                </>
               </ProtectedRoute>
             }
           />

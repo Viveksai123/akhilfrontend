@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { doc, updateDoc, increment, arrayUnion, getDoc } from 'firebase/firestore';
+import { useParams, useNavigate } from 'react-router-dom';
+import { doc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
 function QuestionDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [question, setQuestion] = useState(null);
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [hintsUsed, setHintsUsed] = useState([]);
+  const [submissionTime, setSubmissionTime] = useState(null);
+  const [attemptCount, setAttemptCount] = useState(0);
 
-  // Hardcoded questions data (you can later move this to Firebase)
+  // Hardcoded questions with hints
   const questions = {
     '1': {
       id: '1',
@@ -19,7 +23,12 @@ function QuestionDetail() {
       difficulty: 'easy',
       points: 100,
       description: 'Convert the following string of ASCII numbers into a readable string:\n\n0x43 0x59 0x42 0x33 0x52 0x4e 0x33 0x58 0x34 0x7b 0x57 0x33 0x4c 0x43 0x30 0x4d 0x33 0x5f 0x54 0x30 0x5f 0x43 0x59 0x42 0x33 0x52 0x4e 0x33 0x58 0x34 0x7d',
-      answer: 'hello'
+      answer: 'hello',
+      hints: [
+        "Each number is in hexadecimal format (base 16)",
+        "Convert each hex number to its ASCII character equivalent",
+        "The 0x prefix indicates a hexadecimal number"
+      ]
     },
     '2': {
       id: '2',
@@ -27,7 +36,12 @@ function QuestionDetail() {
       difficulty: 'medium',
       points: 150,
       description: 'Are you familiar with ROT13, a simple encryption technique used in cryptography?\n\nPLO3EA3K4{gu3_e0gg3a_frpe3gf}',
-      answer: 'hello'
+      answer: 'hello',
+      hints: [
+        "ROT13 replaces each letter with the letter 13 positions after it",
+        "Numbers remain unchanged in ROT13",
+        "Try an online ROT13 decoder"
+      ]
     },
     '3': {
       id: '3',
@@ -35,7 +49,12 @@ function QuestionDetail() {
       difficulty: 'hard',
       points: 200,
       description: 'Within a cryptographic maze, a hidden message lies in wait. Your task is to decipher the layers of transformation that mask the truth beneath.\n\nVm0xNFlWVXhTWGxVV0doVFYwZFNUMVV3Wkc5V1ZteFpZMGhPVlUxV1NsaFhhMlIzWVRBeFdWRnNXbFpOVmtwSVdWUktTMVl4VG5KaFJsWk9WbXR3UlZkV1dsWmxSMDVZVTJ0b1RsWnRhRmhhVjNSaFUxWmtWMVZyWkdsaVZscFhWREZhYjFSc1duUmxSVGxhVmtWYU0xcEZXbXRXVmtaMFQxWlNUbUpGY0RaWFYzUnZWVEpLUjFOWWNHaFRSVXBZVkZWYVMxSkdXa1pTVkd4UlZWUXdPUT09',
-      answer: 'hello'
+      answer: 'hello',
+      hints: [
+        "This is a multi-layered encoding",
+        "One of the layers is Base64",
+        "Try decoding multiple times"
+      ]
     },
     '4': {
       id: '4',
@@ -43,17 +62,69 @@ function QuestionDetail() {
       difficulty: 'hard',
       points: 250,
       description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
-      answer: 'hello'
+      answer: 'hello',
+      hints: [
+        "The keyword is hidden in plain sight",
+        "Look for the emphasized word in the description",
+        "Vigenère cipher uses a keyword for encryption"
+      ]
     }
   };
 
   useEffect(() => {
-    // Get question data
-    const question = questions[id];
-    if (question) {
-      setQuestion(question);
-    }
+    const fetchQuestion = async () => {
+      try {
+        // Get question from our hardcoded questions
+        const questionData = questions[id];
+        if (!questionData) {
+          setError('Question not found');
+          setLoading(false);
+          return;
+        }
+
+        // Get user's progress for this question
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        const userData = userDoc.data();
+        
+        // Check if question is already solved
+        if (userData.solvedQuestions.includes(id)) {
+          setSuccess(true);
+        }
+
+        // Get hints used
+        setHintsUsed(userData.hintsUsed?.[id] || []);
+        setAttemptCount(userData.attempts?.[id] || 0);
+        
+        setQuestion(questionData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching question:', error);
+        setError('Failed to load question');
+        setLoading(false);
+      }
+    };
+
+    fetchQuestion();
   }, [id]);
+
+  const useHint = async (hintIndex) => {
+    if (hintsUsed.includes(hintIndex)) return;
+    
+    try {
+      // Deduct points for using hint (20% of question points)
+      const deduction = Math.ceil(question.points * 0.2);
+      
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        points: increment(-deduction),
+        [`hintsUsed.${id}`]: arrayUnion(hintIndex)
+      });
+
+      setHintsUsed([...hintsUsed, hintIndex]);
+    } catch (error) {
+      console.error('Error using hint:', error);
+      setError('Failed to use hint');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,87 +138,176 @@ function QuestionDetail() {
     setSuccess(false);
 
     try {
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+
+      // Check if question is already solved
+      if (userData.solvedQuestions.includes(id)) {
+        setError('You have already solved this question!');
+        setLoading(false);
+        return;
+      }
+
+      // Update attempt count
+      const newAttemptCount = (userData.attempts?.[id] || 0) + 1;
+      await updateDoc(userRef, {
+        [`attempts.${id}`]: newAttemptCount
+      });
+      setAttemptCount(newAttemptCount);
+
       if (answer.toLowerCase() === question.answer.toLowerCase()) {
-        // Update user's points in Firestore
-        const userRef = doc(db, 'users', auth.currentUser.uid);
-        
-        // Get current user data
-        const userDoc = await getDoc(userRef);
-        const userData = userDoc.data();
-        
-        // Check if question already solved
-        if (!userData.solvedQuestions.includes(question.id)) {
+        // Calculate points based on hints used
+        const hintPenalty = hintsUsed.length * (question.points * 0.2);
+        const earnedPoints = Math.max(question.points - hintPenalty, question.points * 0.2);
+
+        await updateDoc(userRef, {
+          points: increment(earnedPoints),
+          solvedQuestions: arrayUnion(id),
+          [`solvedAt.${id}`]: new Date().toISOString()
+        });
+
+        setSuccess(true);
+        setSubmissionTime(new Date());
+
+        // Check for achievements
+        if (newAttemptCount === 1 && hintsUsed.length === 0) {
+          // Perfect solve achievement
           await updateDoc(userRef, {
-            points: increment(question.points),
-            solvedQuestions: arrayUnion(question.id)
+            achievements: arrayUnion('perfect_solve')
           });
-          setSuccess(true);
-        } else {
-          setError('You have already solved this question!');
         }
       } else {
         setError('Incorrect answer. Try again!');
       }
     } catch (error) {
-      console.error('Error updating points:', error);
-      setError('Failed to submit answer. Please try again.');
+      console.error('Error submitting answer:', error);
+      setError('Failed to submit answer');
     } finally {
       setLoading(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   if (!question) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        Question not found
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500">Question not found</div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 mt-20">
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-4">{question.title}</h2>
-        <div className="mb-4 flex justify-between items-center">
-          <span className="text-gray-600">Difficulty: {question.difficulty}</span>
-          <span className="text-gray-600">Points: {question.points}</span>
-        </div>
+        {/* Question Header */}
         <div className="mb-6">
-          <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+          <h2 className="text-2xl font-bold mb-2">{question.title}</h2>
+          <div className="flex justify-between items-center">
+            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+              Difficulty: {question.difficulty}
+            </span>
+            <span className="px-3 py-1 bg-green-100 rounded-full text-sm">
+              Points: {question.points}
+            </span>
+          </div>
+        </div>
+
+        {/* Question Description */}
+        <div className="mb-6">
+          <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg text-gray-800 font-mono">
             {question.description}
           </pre>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+
+        {/* Hints Section */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-2">Hints Available</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Using a hint will reduce question points by 20%
+          </p>
+          <div className="space-y-2">
+            {question.hints.map((hint, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                <button
+                  onClick={() => useHint(index)}
+                  disabled={loading || hintsUsed.includes(index) || success}
+                  className={`w-full text-left ${
+                    hintsUsed.includes(index)
+                      ? 'text-gray-700'
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  {hintsUsed.includes(index) ? (
+                    <div>
+                      <span className="font-bold">Hint {index + 1}:</span>
+                      <p>{hint}</p>
+                    </div>
+                  ) : (
+                    `Reveal Hint ${index + 1}`
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Answer Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Your Answer
             </label>
             <input
               type="text"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+              disabled={loading || success}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter your answer"
-              disabled={loading}
             />
           </div>
+
           {error && (
-            <div className="mb-4 text-red-500 text-sm">
+            <div className="text-red-500 text-sm">
               {error}
             </div>
           )}
+
           {success && (
-            <div className="mb-4 text-green-500 text-sm">
-              Correct! Points have been added to your score.
+            <div className="bg-green-50 p-4 rounded-lg">
+              <div className="text-green-700">
+                <span className="font-bold">Correct! </span>
+                Question solved successfully.
+              </div>
+              {submissionTime && (
+                <div className="text-sm text-green-600 mt-1">
+                  Solved at: {submissionTime.toLocaleString()}
+                </div>
+              )}
             </div>
           )}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300"
-            disabled={loading}
-          >
-            {loading ? 'Submitting...' : 'Submit Answer'}
-          </button>
+
+          <div className="flex items-center justify-between">
+            <button
+              type="submit"
+              disabled={loading || success}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Submitting...' : 'Submit Answer'}
+            </button>
+            
+            <div className="text-sm text-gray-500">
+              Attempts: {attemptCount}
+            </div>
+          </div>
         </form>
       </div>
     </div>

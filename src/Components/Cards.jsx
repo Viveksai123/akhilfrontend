@@ -1,36 +1,28 @@
-import React from 'react';
-import '../styles/Cards.css';
+// src/components/GameOver.js
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
 
-function Cards({ hotels }) {
+function GameOver() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/login');
+    }, 5000); // Redirect to login after 5 seconds
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
   return (
-    <div className="pop">
-      <div className="pop-title">
-        <h1>Most Booked Hotels in Popular Places</h1>
-      </div>
-      <div className="Cards1">
-        {hotels.length > 0 ? (
-          hotels.map((hotel) => (
-            <div key={hotel.id} className={hotel.className}>
-              <div className={`${hotel.className}-images`}>
-                <img src={hotel.image} alt={hotel.name} />
-              </div>
-              <div className={`${hotel.className}-d`}>
-                <div className={`${hotel.className}-n`}>
-                  <h4>{hotel.name}</h4>
-                  <p>{hotel.location}</p>
-                </div>
-                <div className={`${hotel.className}-c`}>
-                  <h5>{hotel.price}</h5>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p style={{ textAlign: 'center', color: 'gray' }}>No hotels found</p>
-        )}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md text-center">
+        <h1 className="text-4xl font-bold text-red-600 mb-4">Game Over!</h1>
+        <p className="text-xl text-gray-700 mb-6">Your time has expired</p>
+        <p className="text-gray-500">Redirecting to login in 5 seconds...</p>
       </div>
     </div>
   );
 }
 
-export default Cards;
+export default GameOver;
