@@ -2172,3 +2172,139 @@ html, body {
     }
   }
   
+  .notfound-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #000000 30%, #1a0000 70%);
+    color: white;
+    text-align: center;
+    animation: fadeIn 1.2s ease-in-out;
+  }
+  
+  /* ⚡ 404 Text with Glitch Effect */
+  .error-code {
+    font-size: 8rem;
+    font-weight: bold;
+    color: #ff1a1a;
+    position: relative;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
+    animation: pulse-glow 1.5s infinite alternate, glitch 0.8s infinite;
+  }
+  
+  .error-code::before,
+  .error-code::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.75;
+  }
+  
+  .error-code::before {
+    color: #ff4d4d;
+    transform: translate(-3px, -3px);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
+    animation: glitch 0.8s infinite;
+  }
+  
+  .error-code::after {
+    color: #ff8080;
+    transform: translate(3px, 3px);
+    clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+    animation: glitch 0.8s infinite reverse;
+  }
+  
+  /* 📝 Error Message */
+  .error-message {
+    font-size: 1.5rem;
+    color: #ff6666;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    margin-top: 10px;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+  
+  /* 🚀 Go Back Button */
+  .go-back-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background: #ff1a1a;
+    border: 2px solid #ff4d4d;
+    border-radius: 8px;
+    cursor: pointer;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 1.5s ease-in-out;
+  }
+  
+  /* 🔥 Hover Effect */
+  .go-back-button:hover {
+    background: #ff4d4d;
+    border-color: #ff8080;
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+  }
+  
+  /* 🔄 Background Fade Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* 🔄 Fade-In Up Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* 🔥 Glowing Pulse Animation */
+  @keyframes pulse-glow {
+    from {
+      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
+    }
+    to {
+      text-shadow: 0 0 30px #ff3333, 0 0 50px #ff3333, 0 0 70px #ff3333;
+    }
+  }
+  
+  /* ⚡ Glitch Effect */
+  @keyframes glitch {
+    0% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, -2px);
+    }
+    40% {
+      transform: translate(2px, 2px);
+    }
+    60% {
+      transform: translate(-2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+    100% {
+      transform: translate(0);
+    }
+  }
