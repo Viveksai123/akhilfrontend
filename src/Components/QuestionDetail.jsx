@@ -158,8 +158,8 @@ function QuestionDetail() {
 
       if (answer.toLowerCase() === question.answer.toLowerCase()) {
         // Calculate points based on hints used
-        const hintPenalty = hintsUsed.length * (question.points * 0.2);
-        const earnedPoints = Math.max(question.points - hintPenalty, question.points * 0.2);
+        // const hintPenalty = hintsUsed.length * (question.points * 0.2);
+        const earnedPoints = Math.max(question.points , question.points * 0.2);
 
         await updateDoc(userRef, {
           points: increment(earnedPoints),

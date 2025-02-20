@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { Pie, Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-} from "chart.js";
-
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 function ProgressDashboard() {
   const [userData, setUserData] = useState(null);
@@ -21,12 +9,26 @@ function ProgressDashboard() {
   useEffect(() => {
     const fetchUserProgress = async () => {
       try {
+        if (!auth.currentUser) {
+          console.log("No authenticated user.");
+          setLoading(false);
+          return;
+        }
+
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-        const userData = userDoc.data();
-        setUserData(userData);
-        setLoading(false);
+
+        if (!userDoc.exists()) {
+          console.log("No data found in Firestore.");
+          setLoading(false);
+          return;
+        }
+
+        const data = userDoc.data();
+        console.log("Fetched User Data:", data);
+        setUserData(data);
       } catch (error) {
         console.error("Error fetching user progress:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -34,57 +36,57 @@ function ProgressDashboard() {
     fetchUserProgress();
   }, []);
 
-  if (loading) {
-    return <div>Loading progress...</div>;
+  if (loading) return <div>Loading progress...</div>;
+
+  if (!userData || !userData.solvedQuestions || userData.solvedQuestions.length === 0) {
+    return <div>No progress data available.</div>;
   }
 
-  // Prepare data for difficulty distribution
+  // Count solved questions by difficulty
   const difficultyCounts = {
     easy: userData.solvedQuestions.filter((q) => q.difficulty === "easy").length,
     medium: userData.solvedQuestions.filter((q) => q.difficulty === "medium").length,
     hard: userData.solvedQuestions.filter((q) => q.difficulty === "hard").length,
   };
 
-  const difficultyChartData = {
-    labels: ["Easy", "Medium", "Hard"],
-    datasets: [
-      {
-        data: [difficultyCounts.easy, difficultyCounts.medium, difficultyCounts.hard],
-        backgroundColor: ["#00C49F", "#FFBB28", "#FF8042"],
-      },
-    ],
-  };
-
-  // Prepare data for time analysis
-  const timeChartData = {
-    labels: userData.solvedQuestions.map((q) => q.title),
-    datasets: [
-      {
-        label: "Time Spent (minutes)",
-        data: userData.solvedQuestions.map((q) => q.timeTaken),
-        backgroundColor: userData.solvedQuestions.map((q) =>
-          q.difficulty === "easy" ? "#00C49F" : q.difficulty === "medium" ? "#FFBB28" : "#FF8042"
-        ),
-      },
-    ],
-  };
-
   return (
     <div className="progress-container">
       <h2 className="progress-title">Your Progress</h2>
 
-      <div className="progress-grid">
-        {/* Questions by Difficulty */}
-        <div className="progress-card">
-          <h3 className="progress-subtitle">Questions by Difficulty</h3>
-          <Pie data={difficultyChartData} />
+      <div className="progress-card">
+        <h3>Questions by Difficulty</h3>
+        <div className="progress-bar-container">
+          <label>Easy: {difficultyCounts.easy}</label>
+          <div className="progress-bar easy" style={{ width: `${difficultyCounts.easy * 10}%` }}></div>
         </div>
+        <div className="progress-bar-container">
+          <label>Medium: {difficultyCounts.medium}</label>
+          <div className="progress-bar medium" style={{ width: `${difficultyCounts.medium * 10}%` }}></div>
+        </div>
+        <div className="progress-bar-container">
+          <label>Hard: {difficultyCounts.hard}</label>
+          <div className="progress-bar hard" style={{ width: `${difficultyCounts.hard * 10}%` }}></div>
+        </div>
+      </div>
 
-        {/* Time Analysis */}
-        <div className="progress-card">
-          <h3 className="progress-subtitle">Time Spent per Question</h3>
-          <Bar data={timeChartData} />
-        </div>
+      <div className="progress-card">
+        <h3>Time Spent per Question</h3>
+        <table className="progress-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Time (minutes)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userData.solvedQuestions.map((q, index) => (
+              <tr key={index}>
+                <td>{q.title}</td>
+                <td>{q.timeTaken} min</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
