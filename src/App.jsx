@@ -12,9 +12,38 @@ import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import './App.css';
 
+
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
 
+
+
+  
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
+};
+
+function App() {
 
   useEffect(() => {
     // Disable right-click
@@ -48,31 +77,8 @@ const ProtectedRoute = ({ children }) => {
       clearInterval(antiDebug);
     };
   }, []);
+
   
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
-  return children;
-};
-
-function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">

@@ -2,14 +2,6 @@ import { useState, useEffect } from 'react';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
-// Achievement icon mapping
-const achievementIcons = {
-  first_solve: '🎯',
-  speed_solver: '⚡',
-  perfect_score: '🏆',
-  streak_master: '🔥'
-};
-
 function Leaderboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,9 +18,14 @@ function Leaderboard() {
         const querySnapshot = await getDocs(q);
         let usersList = querySnapshot.docs.map(doc => {
           const data = doc.data();
+          console.log('User data:', {
+            id: doc.id,
+            startTime: data.startTime,
+            solvedAt: data.solvedAt,
+            points: data.points
+          });
           return {
             id: doc.id,
-            achievements: data.achievements || [],
             ...data
           };
         });
@@ -39,9 +36,11 @@ function Leaderboard() {
             return b.points - a.points;
           }
           
+          // Get the last solved question time for each user
           const aStartTime = new Date(a.startTime);
           const bStartTime = new Date(b.startTime);
           
+          // Get the most recent solve time from solvedAt timestamps
           const aLastSolveTime = a.solvedAt ? 
             Math.max(...Object.values(a.solvedAt).map(time => new Date(time).getTime())) :
             new Date(a.startTime).getTime();
@@ -50,8 +49,24 @@ function Leaderboard() {
             Math.max(...Object.values(b.solvedAt).map(time => new Date(time).getTime())) :
             new Date(b.startTime).getTime();
           
+          // Calculate total time taken
           const aTimeTaken = aLastSolveTime - aStartTime.getTime();
           const bTimeTaken = bLastSolveTime - bStartTime.getTime();
+          
+          console.log('Time comparison:', {
+            userA: {
+              username: a.username,
+              startTime: aStartTime.toISOString(),
+              lastSolveTime: new Date(aLastSolveTime).toISOString(),
+              timeTaken: aTimeTaken
+            },
+            userB: {
+              username: b.username,
+              startTime: bStartTime.toISOString(),
+              lastSolveTime: new Date(bLastSolveTime).toISOString(),
+              timeTaken: bTimeTaken
+            }
+          });
           
           return aTimeTaken - bTimeTaken;
         });
@@ -60,11 +75,14 @@ function Leaderboard() {
         usersList = usersList.map((user, index) => {
           const startTime = new Date(user.startTime);
           
+          // Get the last solve time
           const lastSolveTime = user.solvedAt ? 
             Math.max(...Object.values(user.solvedAt).map(time => new Date(time).getTime())) :
             startTime.getTime();
           
           const timeTaken = lastSolveTime - startTime.getTime();
+          
+          // Convert milliseconds to minutes and seconds
           const minutes = Math.floor(timeTaken / 60000);
           const seconds = Math.floor((timeTaken % 60000) / 1000);
           
@@ -86,6 +104,7 @@ function Leaderboard() {
     };
 
     fetchLeaderboard();
+    // Refresh leaderboard every 30 seconds
     const interval = setInterval(fetchLeaderboard, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -110,77 +129,63 @@ function Leaderboard() {
     <div className="leaderboard-container">
       <h2 className="leaderboard-title">Leaderboard</h2>
       <div className="leaderboard-table-container">
-        <table className="leaderboard-table">
-          <thead className="leaderboard-header">
-            <tr>
-              <th>Rank</th>
-              <th>Username</th>
-              <th>Achievements</th>
-              <th className="align-right">Points</th>
-              <th className="align-right">Time Taken</th>
-              <th className="align-right">Questions Solved</th>
-            </tr>
-          </thead>
-          <tbody className="leaderboard-body">
-            {users.map((user) => (
-              <tr 
-                key={user.id}
-                className={`leaderboard-row ${user.isCurrentUser ? 'current-user' : ''}`}
-              >
-                <td className="leaderboard-cell">
-                  <div className="rank-cell">
-                    {user.rank === 1 && <span className="rank-emoji">🏆</span>}
-                    {user.rank === 2 && <span className="rank-emoji">🥈</span>}
-                    {user.rank === 3 && <span className="rank-emoji">🥉</span>}
-                    <span className="rank-number">{user.rank}</span>
-                  </div>
-                </td>
-                <td className="leaderboard-cell">
-                  <div className="username-cell">
-                    <span className="username-text">
-                      {user.username}
-                      {user.isCurrentUser && (
-                        <span className="current-user-badge">You</span>
-                      )}
-                    </span>
-                  </div>
-                </td>
-                <td className="leaderboard-cell achievements-cell">
-                  <div className="flex gap-1">
-                    {user.achievements?.map(achievementId => (
-                      <span 
-                        key={achievementId} 
-                        className="achievement-icon text-xl" 
-                        title={achievementId.split('_').map(word => 
-                          word.charAt(0).toUpperCase() + word.slice(1)
-                        ).join(' ')}
-                      >
-                        {achievementIcons[achievementId]}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="leaderboard-cell points-cell">
-                  {user.points}
-                </td>
-                <td className="leaderboard-cell time-cell">
-                  {user.timeTaken}
-                </td>
-                <td className="leaderboard-cell questions-cell">
-                  {user.solvedQuestions?.length || 0}
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan="6" className="empty-message">
-                  No users have participated yet
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+  <table className="leaderboard-table" style={{ color: "black" }}>
+    <thead className="leaderboard-header">
+      <tr>
+        <th style={{ color: "black" }}>Rank</th>
+        <th style={{ color: "black" }}>Username</th>
+        <th className="align-right" style={{ color: "black" }}>Points</th>
+        <th className="align-right" style={{ color: "black" }}>Time Taken</th>
+        <th className="align-right" style={{ color: "black" }}>Questions Solved</th>
+      </tr>
+    </thead>
+    <tbody className="leaderboard-body">
+      {users.map((user) => (
+        <tr 
+          key={user.id} 
+          className={`leaderboard-row ${user.isCurrentUser ? 'current-user' : ''}`}
+          style={{ color: "black" }}
+        >
+          <td className="leaderboard-cell">
+            <div className="rank-cell" style={{ color: "black" }}>
+              {user.rank === 1 && <span className="rank-emoji">🏆</span>}
+              {user.rank === 2 && <span className="rank-emoji">🥈</span>}
+              {user.rank === 3 && <span className="rank-emoji">🥉</span>}
+              <span className="rank-number">{user.rank}</span>
+            </div>
+          </td>
+          <td className="leaderboard-cell">
+            <div className="username-cell" style={{ color: "black" }}>
+              <span className="username-text">
+                {user.username}
+                {user.isCurrentUser && (
+                  <span className="current-user-badge">You</span>
+                )}
+              </span>
+            </div>
+          </td>
+          <td className="leaderboard-cell points-cell" style={{ color: "black" }}>
+            {user.points}
+          </td>
+          <td className="leaderboard-cell time-cell" style={{ color: "black" }}>
+            {user.timeTaken}
+          </td>
+          <td className="leaderboard-cell questions-cell" style={{ color: "black" }}>
+            {user.solvedQuestions?.length || 0}
+          </td>
+        </tr>
+      ))}
+      {users.length === 0 && (
+        <tr>
+          <td colSpan="5" className="empty-message" style={{ color: "black" }}>
+            No users have participated yet
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
     </div>
   );
 }
