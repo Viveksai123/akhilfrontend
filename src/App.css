@@ -2193,6 +2193,25 @@ html, body {
     text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
     animation: pulse-glow 1.5s infinite alternate, glitch 0.8s infinite;
   }
+
+  .copy-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #111; /* Dark black */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    border: 1px solid #333; /* Subtle border */
+  }
+  
+  .copy-button:hover {
+    background-color: #222; /* Slightly lighter black */
+    cursor: pointer;
+  }
+  
   
   .error-code::before,
   .error-code::after {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef  } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -14,6 +14,16 @@ function QuestionDetail() {
   const [hintsUsed, setHintsUsed] = useState([]);
   const [submissionTime, setSubmissionTime] = useState(null);
   const [attemptCount, setAttemptCount] = useState(0);
+
+  
+    const textRef = useRef(null);
+  
+    const handleCopy = () => {
+      if (textRef.current) {
+        navigator.clipboard.writeText(textRef.current.innerText);
+        alert("Copied to clipboard!");
+      }
+    };
 
   // Hardcoded questions with hints
   const questions = {
@@ -238,9 +248,16 @@ function QuestionDetail() {
       </div>
 
       {/* Question Description */}
-      <div className="qd-description">
-        <pre className="qd-description-text">{question.description}</pre>
-      </div>
+      <div className="qd-description relative">
+      <button onClick={handleCopy} className="copy-button">
+  Copy
+</button>
+
+
+      <pre ref={textRef} className="qd-description-text">
+        {question.description}
+      </pre>
+    </div>
 
       {/* Hints Section */}
       <div className="qd-hints">
