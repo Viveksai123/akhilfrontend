@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
+// Achievement icon mapping
+const achievementIcons = {
+  first_solve: '🎯',
+  speed_solver: '⚡',
+  perfect_score: '🏆',
+  streak_master: '🔥'
+};
+
 function Leaderboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,14 +26,9 @@ function Leaderboard() {
         const querySnapshot = await getDocs(q);
         let usersList = querySnapshot.docs.map(doc => {
           const data = doc.data();
-          console.log('User data:', {
-            id: doc.id,
-            startTime: data.startTime,
-            solvedAt: data.solvedAt,
-            points: data.points
-          });
           return {
             id: doc.id,
+            achievements: data.achievements || [],
             ...data
           };
         });
@@ -36,11 +39,9 @@ function Leaderboard() {
             return b.points - a.points;
           }
           
-          // Get the last solved question time for each user
           const aStartTime = new Date(a.startTime);
           const bStartTime = new Date(b.startTime);
           
-          // Get the most recent solve time from solvedAt timestamps
           const aLastSolveTime = a.solvedAt ? 
             Math.max(...Object.values(a.solvedAt).map(time => new Date(time).getTime())) :
             new Date(a.startTime).getTime();
@@ -49,24 +50,8 @@ function Leaderboard() {
             Math.max(...Object.values(b.solvedAt).map(time => new Date(time).getTime())) :
             new Date(b.startTime).getTime();
           
-          // Calculate total time taken
           const aTimeTaken = aLastSolveTime - aStartTime.getTime();
           const bTimeTaken = bLastSolveTime - bStartTime.getTime();
-          
-          console.log('Time comparison:', {
-            userA: {
-              username: a.username,
-              startTime: aStartTime.toISOString(),
-              lastSolveTime: new Date(aLastSolveTime).toISOString(),
-              timeTaken: aTimeTaken
-            },
-            userB: {
-              username: b.username,
-              startTime: bStartTime.toISOString(),
-              lastSolveTime: new Date(bLastSolveTime).toISOString(),
-              timeTaken: bTimeTaken
-            }
-          });
           
           return aTimeTaken - bTimeTaken;
         });
@@ -75,14 +60,11 @@ function Leaderboard() {
         usersList = usersList.map((user, index) => {
           const startTime = new Date(user.startTime);
           
-          // Get the last solve time
           const lastSolveTime = user.solvedAt ? 
             Math.max(...Object.values(user.solvedAt).map(time => new Date(time).getTime())) :
             startTime.getTime();
           
           const timeTaken = lastSolveTime - startTime.getTime();
-          
-          // Convert milliseconds to minutes and seconds
           const minutes = Math.floor(timeTaken / 60000);
           const seconds = Math.floor((timeTaken % 60000) / 1000);
           
@@ -104,7 +86,6 @@ function Leaderboard() {
     };
 
     fetchLeaderboard();
-    // Refresh leaderboard every 30 seconds
     const interval = setInterval(fetchLeaderboard, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -134,6 +115,7 @@ function Leaderboard() {
             <tr>
               <th>Rank</th>
               <th>Username</th>
+              <th>Achievements</th>
               <th className="align-right">Points</th>
               <th className="align-right">Time Taken</th>
               <th className="align-right">Questions Solved</th>
@@ -163,6 +145,21 @@ function Leaderboard() {
                     </span>
                   </div>
                 </td>
+                <td className="leaderboard-cell achievements-cell">
+                  <div className="flex gap-1">
+                    {user.achievements?.map(achievementId => (
+                      <span 
+                        key={achievementId} 
+                        className="achievement-icon text-xl" 
+                        title={achievementId.split('_').map(word => 
+                          word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ')}
+                      >
+                        {achievementIcons[achievementId]}
+                      </span>
+                    ))}
+                  </div>
+                </td>
                 <td className="leaderboard-cell points-cell">
                   {user.points}
                 </td>
@@ -176,7 +173,7 @@ function Leaderboard() {
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan="5" className="empty-message">
+                <td colSpan="6" className="empty-message">
                   No users have participated yet
                 </td>
               </tr>
