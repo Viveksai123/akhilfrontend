@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import questions from './Search';
 
 // Utility function to generate hashes for answers (for setup)
 async function generateHash(answer) {
@@ -55,63 +56,7 @@ function QuestionDetail() {
     }
   };
 
-  // Hardcoded questions with hashed answers and plain text hints
-  const questions = {
-    '1': {
-      id: '1',
-      title: 'ASCII Numbers',
-      difficulty: 'easy',
-      points: 100,
-      description: 'Convert the following string of ASCII numbers into a readable string:\n\n0x43 0x59 0x42 0x33 0x52 0x4e 0x33 0x58 0x34 0x7b 0x57 0x33 0x4c 0x43 0x30 0x4d 0x33 0x5f 0x54 0x30 0x5f 0x43 0x59 0x42 0x33 0x52 0x4e 0x33 0x58 0x34 0x7d',
-      // Hash of the actual answer
-      answer: '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824',
-      hints: [
-        "Each number is in hexadecimal format (base 16)",
-        "Convert each hex number to its ASCII character equivalent",
-        "The 0x prefix indicates a hexadecimal number"
-      ]
-    },
-    '2': {
-      id: '2',
-      title: 'Rotten Secrets',
-      difficulty: 'medium',
-      points: 150,
-      description: 'Are you familiar with ROT13, a simple encryption technique used in cryptography?\n\nPLO3EA3K4{gu3_e0gg3a_frpe3gf}',
-      answer: '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824',
-      hints: [
-        "ROT13 replaces each letter with the letter 13 positions after it",
-        "Numbers remain unchanged in ROT13",
-        "Try an online ROT13 decoder"
-      ]
-    },
-    
-'3': {
-  id: '3',
-  title: 'Layers of Message',
-  difficulty: 'hard',
-  points: 200,
-  description: 'Within a cryptographic maze, a hidden message lies in wait. Your task is to decipher the layers of transformation that mask the truth beneath.\n\nVm0xNFlWVXhTWGxVV0doVFYwZFNUMVV3Wkc5V1ZteFpZMGhPVlUxV1NsaFhhMlIzWVRBeFdWRnNXbFpOVmtwSVdWUktTMVl4VG5KaFJsWk9WbXR3UlZkV1dsWmxSMDVZVTJ0b1RsWnRhRmhhVjNSaFUxWmtWMVZyWkdsaVZscFhWREZhYjFSc1duUmxSVGxhVmtWYU0xcEZXbXRXVmtaMFQxWlNUbUpGY0RaWFYzUnZWVEpLUjFOWWNHaFRSVXBZVkZWYVMxSkdXa1pTVkd4UlZWUXdPUT09',
-  answer: '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824',
-  hints: [
-    "This is a multi-layered encoding",
-    "One of the layers is Base64",
-    "Try decoding multiple times"
-  ]
-},
-'4': {
-  id: '4',
-  title: 'Journey Through Vigenère',
-  difficulty: 'hard',
-  points: 250,
-  description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
-  answer: '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824',
-  hints: [
-    "The keyword is hidden in plain sight",
-    "Look for the emphasized word in the description",
-    "Vigenère cipher uses a keyword for encryption"
-  ]
-}
-  };
+  // Questions are now imported from the questions.jsx file
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -277,15 +222,46 @@ function QuestionDetail() {
 
       {/* Question Description */}
       <div className="qd-description relative">
-      <button onClick={handleCopy} className="copy-button">
-  Copy
-</button>
+        <button onClick={handleCopy} className="copy-button">
+          Copy
+        </button>
 
+        <pre ref={textRef} className="qd-description-text">
+          {question.description}
+        </pre>
+      </div>
 
-      <pre ref={textRef} className="qd-description-text">
-        {question.description}
-      </pre>
-    </div>
+      {/* Added Resource Link Section (only shows when link exists) */}
+      {question.link && (
+        <div className="qd-resource-link bg-gradient-to-r from-rose-50 to-pink-50 p-4 rounded-lg shadow-sm border border-rose-200 mt-2 mb-6" style={{ textDecoration: 'none', color: '#ffffff',marginBottom:'40px' }}>
+          <h3 className="qd-resource-title text-lg font-medium text-maroon-700 mb-2" style={{color:'red', marginBottom:'10px'}}>Helpful Resource</h3>
+          <a 
+            href={question.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="qd-link inline-flex items-center px-4 py-2 text-maroon-600 hover:text-maroon-800 font-medium rounded-md transition-colors duration-200 group underline"
+            
+            style={{ textDecoration: '', color: '#ffffff',marginBottom:'40px' }}
+          >
+            <svg 
+              className="qd-link-icon w-5 h-5 mr-2 group-hover:translate-x-0.5 transition-transform duration-200" 
+              style={{ textDecoration: 'underline', color: '#ffffff',marginRight:'5px',  }}
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            {question.link}
+          </a>
+         
+        </div>
+      )}
 
       {/* Hints Section */}
       <div className="qd-hints">
@@ -363,4 +339,3 @@ function QuestionDetail() {
 }
 
 export default QuestionDetail;
-
