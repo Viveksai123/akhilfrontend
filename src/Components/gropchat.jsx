@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { updateProfile } from "firebase/auth";
 import { Send, X, Minimize2, Maximize2 } from 'lucide-react';
 
 const styles = {
+  // Styles remain unchanged
   '@keyframes slideIn': {
     from: { transform: 'translateY(20px)', opacity: 0 },
     to: { transform: 'translateY(0)', opacity: 1 }
@@ -34,9 +35,10 @@ const styles = {
     fontFamily: "'Inter', system-ui, sans-serif"
   },
   chatContainerMinimized: {
-    width: '280px',
+    width: '250px',
     maxHeight: 'auto',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    marginBottom:'0px   '
   },
   chatHeader: {
     display: 'flex',
@@ -238,6 +240,7 @@ const styles = {
 
 const FloatingGroupChat = () => {
   const [messages, setMessages] = useState([]);
+  const [processedMessages, setProcessedMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -246,10 +249,60 @@ const FloatingGroupChat = () => {
   const messagesEndRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
+  const [userCache, setUserCache] = useState({});
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Fetch user data from user collection
+  const fetchUserData = async (userId) => {
+    // Check cache first
+    if (userCache[userId]) {
+      return userCache[userId];
+    }
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // Update cache
+        setUserCache(prev => ({
+          ...prev,
+          [userId]: userData.username || userData.displayName || 'User'
+        }));
+        return userData.username || userData.displayName || 'User';
+      } else {
+        // If user document doesn't exist
+        return 'Unknown User';
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return 'Unknown User';
+    }
+  };
+
+  // Process messages to add username from the users collection
+  useEffect(() => {
+    const processMessages = async () => {
+      const processed = await Promise.all(
+        messages.map(async (message) => {
+          if (!message.userId) {
+            return { ...message, displayUsername: 'Unknown User' };
+          }
+
+          // Use cached username or fetch new one
+          const username = await fetchUserData(message.userId);
+          return { ...message, displayUsername: username };
+        })
+      );
+      setProcessedMessages(processed);
+    };
+
+    if (messages.length > 0) {
+      processMessages();
+    }
+  }, [messages, userCache]);
 
   useEffect(() => {
     const q = query(
@@ -272,13 +325,6 @@ const FloatingGroupChat = () => {
     return () => unsubscribe();
   }, [isMinimized]);
 
-  useEffect(() => {
-    if (auth.currentUser && !auth.currentUser.displayName) {
-      updateProfile(auth.currentUser, { displayName: "Anonymous User" })
-        .catch(error => console.error("Error setting display name:", error));
-    }
-  }, []);
-
   const handleTyping = () => {
     setIsTyping(true);
     if (typingTimeoutRef.current) {
@@ -294,13 +340,12 @@ const FloatingGroupChat = () => {
     if (!newMessage.trim() || !auth.currentUser) return;
 
     const user = auth.currentUser;
-    const username = user.displayName || user.email || 'Anonymous';
+    const userId = user.uid;
 
     try {
       await addDoc(collection(db, 'groupChat'), {
         text: newMessage.trim(),
-        username,
-        userId: user.uid,
+        userId: userId,
         timestamp: serverTimestamp()
       });
 
@@ -367,7 +412,7 @@ const FloatingGroupChat = () => {
       {!isMinimized && (
         <>
           <div style={styles.messagesContainer}>
-            {messages.map((message) => {
+            {processedMessages.map((message) => {
               const isCurrentUser = message.userId === auth.currentUser?.uid;
 
               return (
@@ -385,7 +430,7 @@ const FloatingGroupChat = () => {
                     }}
                   >
                     <div style={styles.username}>
-                      {isCurrentUser ? "You" : message.username || 'Anonymous'}
+                      {isCurrentUser ? "You" : message.displayUsername}
                     </div>
                     <div style={styles.messageText}>{message.text}</div>
                     <div style={styles.timestamp}>

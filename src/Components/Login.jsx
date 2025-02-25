@@ -151,7 +151,7 @@ useEffect(() => {
     <div className="matrix-bg"></div>
     
     <div className="welcome-section">
-        <h1 className="welcome-title">CTF CYBER NEXA</h1>
+        <h1 className="welcome-title">CTF CYB3R AR3NA</h1>
         <p className="welcome-subtitle">You have 60 minutes to complete the challenge</p>
     </div>
 

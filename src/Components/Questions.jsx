@@ -34,6 +34,15 @@ function QuestionList() {
       description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
       answer: 'hello'
     },
+
+    {
+      id: '5',
+      title: 'Find the Seal',
+      difficulty: 'hard',
+      points: 250,
+      description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
+      answer: 'hello'
+    },
     // Add other questions here
   ]);
 
