@@ -105,7 +105,7 @@ function Navbar() {
                 to="/" 
                 className="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors"
               >
-                Quiz App
+                CYB3R AR3N4
               </Link>
             </div>
 
