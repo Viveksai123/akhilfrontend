@@ -1,6 +1,6 @@
 // Navbar.jsx
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 
@@ -9,13 +9,13 @@ function Navbar() {
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const timerRef = useRef(null);
 
   useEffect(() => {
     if (!auth.currentUser) {
       return;
     }
 
-    let timer;
     let pointsUnsubscribe;
 
     const setupTimer = async () => {
@@ -29,12 +29,12 @@ function Navbar() {
           const endTime = new Date(userData.endTime);
 
           // Update timer every second
-          timer = setInterval(() => {
+          timerRef.current = setInterval(() => {
             const now = new Date();
             const remaining = endTime - now;
 
             if (remaining <= 0) {
-              clearInterval(timer);
+              if (timerRef.current) clearInterval(timerRef.current);
               handleTimeUp();
               return;
             }
@@ -66,14 +66,14 @@ function Navbar() {
 
     // Cleanup
     return () => {
-      if (timer) clearInterval(timer);
+      if (timerRef.current) clearInterval(timerRef.current);
       if (pointsUnsubscribe) pointsUnsubscribe();
     };
   }, [navigate]);
 
   const handleTimeUp = async () => {
     try {
-      clearInterval(timer);
+      if (timerRef.current) clearInterval(timerRef.current);
       await auth.signOut();
       navigate('/game-over');
     } catch (error) {

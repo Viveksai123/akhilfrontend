@@ -1,88 +1,90 @@
-import React, { useState, useEffect } from "react";
-import { auth, db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useState, useEffect } from 'react';
 
-function ProgressDashboard() {
-  const [userData, setUserData] = useState(null);
+const NormalizedAnswers = () => {
+  const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserProgress = async () => {
-      try {
-        if (!auth.currentUser) {
-          console.log("No authenticated user.");
-          setLoading(false);
-          return;
-        }
-
-        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
-
-        if (!userDoc.exists()) {
-          console.log("No data found in Firestore.");
-          setLoading(false);
-          return;
-        }
-
-        const data = userDoc.data();
-        console.log("Fetched User Data:", data);
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching user progress:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProgress();
-  }, []);
-
-  if (loading) return <div>Loading progress...</div>;
-
-  if (!userData || !userData.solvedQuestions || userData.solvedQuestions.length === 0) {
-    return <div>No progress data available.</div>;
+  
+  // The normalization function from the code
+  function normalizeInput(input) {
+    return input
+      .trim()                    
+      .toLowerCase()             
+      .replace(/\s+/g, ' ')      
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '') 
+      .replace(/\s+$/g, '');     
   }
 
-  // Count solved questions by difficulty
-  const difficultyCounts = {
-    easy: userData.solvedQuestions.filter((q) => q.difficulty === "easy").length,
-    medium: userData.solvedQuestions.filter((q) => q.difficulty === "medium").length,
-    hard: userData.solvedQuestions.filter((q) => q.difficulty === "hard").length,
-  };
-
+  useEffect(() => {
+    const calculateHashes = async () => {
+      const originalAnswers = [
+        { id: 1, answer: "CYB3RN3X4{W3LC0M3_T0_CYB3RN3X4}", description: "ASCII Numbers" },
+        { id: 2, answer: "CYB3RN3X4{th3_r0tt3n_secr3ts}", description: "Rotten Secrets (ROT13)" },
+        { id: 3, answer: "CYB3RN3X4{not_too_bad_of_a_problem}", description: "Layers of Message (Base64)" },
+        { id: 4, answer: "CYB3RN3X4{v1g3n3r3_i5_fun}", description: "Journey Through Vigenère" }
+      ];
+      
+      const processedAnswers = await Promise.all(originalAnswers.map(async ({ id, answer, description }) => {
+        const normalized = normalizeInput(answer);
+        
+        // Hash the normalized answer
+        const msgBuffer = new TextEncoder().encode(normalized);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        return { 
+          id, 
+          description, 
+          original: answer, 
+          normalized, 
+          hash 
+        };
+      }));
+      
+      setAnswers(processedAnswers);
+      setLoading(false);
+    };
+    
+    calculateHashes();
+  }, []);
+  
+  if (loading) {
+    return <div className="p-6 text-center">Calculating hashes...</div>;
+  }
+  
   return (
-    <div className="progress-container">
-      <h2 className="progress-title">Your Progress</h2>
-
-      <div className="progress-card">
-        <h3>Questions by Difficulty</h3>
-        <div className="progress-bar-container">
-          <label>Easy: {difficultyCounts.easy}</label>
-          <div className="progress-bar easy" style={{ width: `${difficultyCounts.easy * 10}%` }}></div>
-        </div>
-        <div className="progress-bar-container">
-          <label>Medium: {difficultyCounts.medium}</label>
-          <div className="progress-bar medium" style={{ width: `${difficultyCounts.medium * 10}%` }}></div>
-        </div>
-        <div className="progress-bar-container">
-          <label>Hard: {difficultyCounts.hard}</label>
-          <div className="progress-bar hard" style={{ width: `${difficultyCounts.hard * 10}%` }}></div>
-        </div>
-      </div>
-
-      <div className="progress-card">
-        <h3>Time Spent per Question</h3>
-        <table className="progress-table">
+    <div className="p-6 max-w-6xl mx-auto bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6 text-center">CTF Challenge Answers with Normalization</h1>
+      <p className="mb-6 text-gray-700 text-center">
+        This shows how answers are normalized and hashed according to the application's validation logic
+      </p>
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white">
           <thead>
-            <tr>
-              <th>Question</th>
-              <th>Time (minutes)</th>
+            <tr className="bg-gray-200 text-gray-700">
+              <th className="py-3 px-4 text-left">Question</th>
+              <th className="py-3 px-4 text-left">Original Answer</th>
+              <th className="py-3 px-4 text-left">Normalized Answer</th>
+              <th className="py-3 px-4 text-left">Hash (SHA-256)</th>
             </tr>
           </thead>
           <tbody>
-            {userData.solvedQuestions.map((q, index) => (
-              <tr key={index}>
-                <td>{q.title}</td>
-                <td>{q.timeTaken} min</td>
+            {answers.map((item) => (
+              <tr key={item.id} className="border-b">
+                <td className="py-3 px-4">
+                  <div className="font-semibold">Q{item.id}</div>
+                  <div className="text-sm text-gray-600">{item.description}</div>
+                </td>
+                <td className="py-3 px-4 font-mono text-sm break-all">
+                  {item.original}
+                </td>
+                <td className="py-3 px-4 font-mono text-sm break-all">
+                  {item.normalized}
+                </td>
+                <td className="py-3 px-4 font-mono text-sm break-all">
+                  {item.hash}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -90,6 +92,6 @@ function ProgressDashboard() {
       </div>
     </div>
   );
-}
+};
 
-export default ProgressDashboard;
+export default NormalizedAnswers;

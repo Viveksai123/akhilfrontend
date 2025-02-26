@@ -2,18 +2,19 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, updateDoc, getDoc, arrayUnion, increment } from 'firebase/firestore';
 import { auth, db } from '../firebase';
-import questions from './Search';
+import questions from './Search'; // Make sure this points to your updated questions.jsx file
+import CryptoJS from 'crypto-js'; // Import CryptoJS for consistent hashing
 
 // Utility function to generate hashes for answers (for setup)
 async function generateHash(answer) {
-  const hash = await sha256(answer);
+  const hash = sha256(answer);
   console.log(`Original answer: "${answer}"`);
   console.log(`Generated hash: ${hash}`);
   return hash;
 }
 
 // Example usage:
-// generateHash("Your Answer Here").then(hash => console.log(hash));
+// generateHash("CYB3RN3X4{th3_r0tt3n_secr3ts}").then(hash => console.log(hash));
 
 // Function to normalize input string
 function normalizeInput(input) {
@@ -26,13 +27,10 @@ function normalizeInput(input) {
 }
 
 // Function to compute SHA-256 hash with normalization
-async function sha256(message) {
+function sha256(message) {
   const normalizedMessage = normalizeInput(message);
-  const msgBuffer = new TextEncoder().encode(normalizedMessage);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
+  // Use CryptoJS for consistent hashing with gropchat.jsx
+  return CryptoJS.SHA256(normalizedMessage).toString();
 }
 
 function QuestionDetail() {
@@ -118,43 +116,51 @@ function QuestionDetail() {
       setError('Please enter an answer');
       return;
     }
-
+  
     setLoading(true);
     setError('');
     setSuccess(false);
-
+  
     try {
       const userRef = doc(db, 'users', auth.currentUser.uid);
       const userDoc = await getDoc(userRef);
       const userData = userDoc.data();
-
+  
       if (userData.solvedQuestions.includes(id)) {
         setError('You have already solved this question!');
         setLoading(false);
         return;
       }
-
+  
       const newAttemptCount = (userData.attempts?.[id] || 0) + 1;
       await updateDoc(userRef, {
         [`attempts.${id}`]: newAttemptCount
       });
       setAttemptCount(newAttemptCount);
-
+  
       // Hash the user's answer before comparison
-      const hashedAnswer = await sha256(answer);
+      const hashedAnswer = sha256(answer);
+      
+      // For debugging (uncomment if needed)
+      // console.log("Original answer:", answer);
+      // console.log("Normalized:", normalizeInput(answer));
+      // console.log("Hashed answer:", hashedAnswer);
+      // console.log("Expected hash:", question.answer);
       
       if (hashedAnswer === question.answer) {
-        const earnedPoints = Math.max(question.points, question.points * 0.2);
-
+        // Award full points - don't subtract for hints again since 
+        // points were already deducted when hints were revealed
+        const earnedPoints = question.points;
+  
         await updateDoc(userRef, {
           points: increment(earnedPoints),
           solvedQuestions: arrayUnion(id),
           [`solvedAt.${id}`]: new Date().toISOString()
         });
-
+  
         setSuccess(true);
         setSubmissionTime(new Date());
-
+  
         if (newAttemptCount === 1 && hintsUsed.length === 0) {
           await updateDoc(userRef, {
             achievements: arrayUnion('perfect_solve')

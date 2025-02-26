@@ -3,6 +3,8 @@ import { collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
 import { auth, db } from '../firebase';
 import { updateProfile } from "firebase/auth";
 import { Send, X, Minimize2, Maximize2 } from 'lucide-react';
+import { SHA256 } from 'crypto-js'; // Import for hashing
+import questions from './Search'; // Adjust the path as needed
 
 const styles = {
   // Styles remain unchanged
@@ -225,12 +227,14 @@ const styles = {
     margin: '0 auto'
   },
   errorContainer: {
-    padding: '20px',
-    color: '#ff4444',
+    padding: '12px',
+    margin: '0 16px 16px',
+    color: '#ffffff',
+    backgroundColor: '#ff4444',
     textAlign: 'center',
-    backgroundColor: '#1a1a1a',
-    borderRadius: '16px',
-    border: '1px solid #ff4444'
+    borderRadius: '8px',
+    fontSize: '14px',
+    animation: 'fadeIn 0.3s ease-out'
   },
   '@keyframes spin': {
     '0%': { transform: 'rotate(0deg)' },
@@ -250,6 +254,75 @@ const FloatingGroupChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
   const [userCache, setUserCache] = useState({});
+
+  // Validate that the questions object is loaded properly
+  const validateQuestionsLoaded = () => {
+    if (!questions) {
+      console.error("Questions object is undefined!");
+      return false;
+    }
+    
+    if (Object.keys(questions).length === 0) {
+      console.error("Questions object is empty!");
+      return false;
+    }
+    
+    // Check if any question has an answer
+    const hasAnswers = Object.values(questions).some(q => q.answer);
+    if (!hasAnswers) {
+      console.error("No questions have answers defined!");
+      return false;
+    }
+    
+    console.log("Questions loaded successfully with", Object.keys(questions).length, "items");
+    return true;
+  };
+
+  // Log questions on component mount
+  useEffect(() => {
+    console.log("Questions loaded:", questions);
+    validateQuestionsLoaded();
+  }, []);
+
+  // Check if a message contains a flag using multiple detection methods
+// Updated checkForFlag function to properly validate answers
+const checkForFlag = (message) => {
+  if (!validateQuestionsLoaded()) {
+    console.error("Cannot check flag: questions not properly loaded");
+    return false;
+  }
+  
+  try {
+    // Normalize and hash the message using the same logic as in QuestionDetail.jsx
+    function normalizeInput(input) {
+      return input
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+        .replace(/\s+$/g, '');
+    }
+    
+    // First check the raw message against the question.answer hashes
+    const normalizedMessage = normalizeInput(message);
+    const hashedMessage = SHA256(normalizedMessage).toString();
+    
+    // Check if any question's answer hash matches
+    const hashMatch = Object.values(questions).some(q => q.answer === hashedMessage);
+    
+    // For debugging
+    console.log("Message:", message);
+    console.log("Normalized:", normalizedMessage);
+    console.log("Hash:", hashedMessage);
+    console.log("Hash match:", hashMatch);
+    
+    // Return true if we found a match (this will block the message)
+    return hashMatch;
+  } catch (error) {
+    console.error("Error in checkForFlag:", error);
+    return false;
+  }
+};
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -335,16 +408,33 @@ const FloatingGroupChat = () => {
     }, 1000);
   };
 
+  // Updated handleSubmit with comprehensive flag checking
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !auth.currentUser) return;
 
+    const messageText = newMessage.trim();
     const user = auth.currentUser;
     const userId = user.uid;
 
     try {
+      console.log("Checking message:", messageText);
+      
+      // Check if the message is a flag
+      const isFlag = checkForFlag(messageText);
+      
+      if (isFlag) {
+        console.log("FLAG DETECTED - blocking message");
+        setError('Sharing answers is not allowed!');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      
+      console.log("Message approved for sending");
+      
+      // If not a flag, send the message
       await addDoc(collection(db, 'groupChat'), {
-        text: newMessage.trim(),
+        text: messageText,
         userId: userId,
         timestamp: serverTimestamp()
       });
@@ -352,8 +442,9 @@ const FloatingGroupChat = () => {
       setNewMessage('');
       scrollToBottom();
     } catch (error) {
-      console.error('Error sending message:', error);
-      setError('Failed to send message');
+      console.error('Error in message submission:', error);
+      setError('Error sending message: ' + error.message);
+      setTimeout(() => setError(''), 3000);
     }
   };
 
@@ -370,17 +461,6 @@ const FloatingGroupChat = () => {
         <div style={styles.loadingContainer}>
           <div style={styles.loadingSpinner} />
           <div style={{ marginTop: '12px' }}>Loading chat...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={styles.chatContainer}>
-        <div style={styles.errorContainer}>
-          <X size={24} style={{ margin: '0 auto', marginBottom: '8px' }} />
-          Error: {error}
         </div>
       </div>
     );
@@ -452,6 +532,12 @@ const FloatingGroupChat = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
+
+          {error && (
+            <div style={styles.errorContainer}>
+              {error}
+            </div>
+          )}
 
           <form style={styles.inputForm} onSubmit={handleSubmit}>
             <input

@@ -1,0 +1,842 @@
+/* EnhancedCyberpunkAchievements.css - Extreme cyberpunk theme with advanced effects */
+
+/* Cyberpunk fonts imports - add these to your index.html */
+/* 
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+*/
+
+/* Main container with futuristic scan lines effect */
+.achievements-container {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 0, 0, 0.95) 100%);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 2.5rem !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.15);
+  max-width: 1024px;
+  margin: 2rem auto;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Scan lines overlay */
+.achievements-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* Pulsing border effect */
+.achievements-container::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(45deg, 
+    #ff0000, 
+    #990000, 
+    #ff0000, 
+    #990000, 
+    #ff0000);
+  background-size: 300% 300%;
+  animation: pulsingBorder 4s linear infinite;
+  border-radius: 14px;
+  z-index: -2;
+  filter: blur(5px);
+  opacity: 0.7;
+}
+
+/* Header with glitch effect title */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #ff1a1a;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.7), 0 0 20px rgba(255, 0, 0, 0.5);
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+/* Glitch text effect */
+.title[data-text]::before,
+.title[data-text]::after {
+  content: attr(data-text);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+}
+
+.title[data-text]::before {
+  left: -2px;
+  text-shadow: 3px 0 #ff0000;
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+.title[data-text]::after {
+  left: 2px;
+  text-shadow: -3px 0 #ff0000;
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+/* Stats card with holographic effect */
+.statsCard {
+  display: flex;
+  gap: 2rem;
+  padding: 1.25rem 1.75rem;
+  background: rgba(10, 0, 0, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Holographic sheen effect */
+.statsCard::before {
+  content: '';
+  position: absolute;
+  top: -250%;
+  left: -250%;
+  width: 500%;
+  height: 500%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0),
+    rgba(255, 0, 0, 0.1),
+    rgba(255, 0, 0, 0)
+  );
+  transform: rotate(30deg);
+  animation: holographicSheen 6s linear infinite;
+  z-index: -1;
+}
+
+.statItem {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.statLabel {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.35rem;
+  opacity: 0.9;
+}
+
+.statValue {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+  letter-spacing: 1px;
+}
+
+/* Progress bars with reactive pulse */
+.progressContainer {
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.progressBar {
+  width: 100%;
+  height: 12px;
+  background: rgba(20, 0, 0, 0.6);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Scan line effect inside progress bar */
+.progressBar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 20px,
+    rgba(255, 0, 0, 0.05) 20px,
+    rgba(255, 0, 0, 0.05) 40px
+  );
+  animation: scanProgressBar 2s linear infinite;
+  pointer-events: none;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    #800000, 
+    #ff0000, 
+    #ff3333, 
+    #ff0000, 
+    #800000);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progressText {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: #ff3333;
+  text-align: right;
+  margin-top: 0.5rem;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  letter-spacing: 1px;
+}
+
+/* Filter buttons with cybernetic design */
+.filterContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  z-index: 1;
+}
+
+.filterButtonActive {
+  background: rgba(255, 0, 0, 0.3);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.filterButtonInactive {
+  background: rgba(20, 0, 0, 0.8);
+  color: #cc3333;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.filterButtonInactive:hover {
+  background: rgba(255, 0, 0, 0.15);
+  border-color: rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Button light streak effect */
+.filterButton::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 70%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: rotate(25deg);
+  transition: all 0.7s ease;
+  z-index: -1;
+}
+
+.filterButton:hover::after {
+  left: 130%;
+  transition: all 0.7s ease;
+}
+
+/* Achievement grid layout */
+.achievementsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .achievementsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .achievementsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Achievement card styling with cyber-chrome effect */
+.achievementCard {
+  position: relative;
+  background: linear-gradient(145deg, rgba(15, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* Cyber-chrome edge effect */
+.achievementCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 0, 0, 0.1) 0%,
+    transparent 50%,
+    rgba(255, 0, 0, 0.1) 100%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+.achievementCardLocked {
+  border: 1px solid rgba(75, 75, 75, 0.4);
+  opacity: 0.65;
+  filter: grayscale(0.7);
+}
+
+.achievementCardLocked:hover {
+  opacity: 0.85;
+  filter: grayscale(0.4);
+}
+
+/* Rarity-based achievement card styles with enhanced glow */
+.rarityCommon {
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+.rarityUncommon {
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.rarityRare {
+  border: 1px solid rgba(145, 0, 255, 0.5);
+  box-shadow: 0 0 20px rgba(145, 0, 255, 0.2);
+}
+
+.rarityEpic {
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.2);
+}
+
+.rarityLegendary {
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* Enhanced hover effect for achievement cards */
+.achievementCard:hover {
+  transform: translateY(-8px) scale(1.02);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Enhanced rarity-based hover glows */
+.rarityCommon:hover {
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+}
+
+.rarityUncommon:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+}
+
+.rarityRare:hover {
+  box-shadow: 0 0 30px rgba(145, 0, 255, 0.4);
+}
+
+.rarityEpic:hover {
+  box-shadow: 0 0 30px rgba(255, 165, 0, 0.4);
+}
+
+.rarityLegendary:hover {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+/* Achievement icon container with enhanced glow */
+.achievementIconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  font-size: 1.75rem;
+  margin-right: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Rarity based icon containers */
+.rarityCommon .achievementIconContainer {
+  background: rgba(20, 0, 0, 0.8);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+.rarityUncommon .achievementIconContainer {
+  background: rgba(0, 20, 0, 0.8);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.rarityRare .achievementIconContainer {
+  background: rgba(20, 0, 20, 0.8);
+  box-shadow: 0 0 15px rgba(145, 0, 255, 0.3);
+}
+
+.rarityEpic .achievementIconContainer {
+  background: rgba(20, 10, 0, 0.8);
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+}
+
+.rarityLegendary .achievementIconContainer {
+  background: rgba(20, 20, 0, 0.8);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.achievementContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Achievement details */
+.achievementHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.achievementTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* Rarity based title colors */
+.rarityCommon .achievementTitle {
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
+}
+
+.rarityUncommon .achievementTitle {
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+}
+
+.rarityRare .achievementTitle {
+  text-shadow: 0 0 8px rgba(145, 0, 255, 0.7);
+}
+
+.rarityEpic .achievementTitle {
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.7);
+}
+
+.rarityLegendary .achievementTitle {
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+}
+
+.achievementPoints {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.pointsCommon {
+  color: #ff3333;
+  border-color: rgba(255, 0, 0, 0.5);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+}
+
+.pointsUncommon {
+  color: #33ff33;
+  border-color: rgba(0, 255, 0, 0.5);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+.pointsRare {
+  color: #9933ff;
+  border-color: rgba(145, 0, 255, 0.5);
+  text-shadow: 0 0 5px rgba(145, 0, 255, 0.7);
+}
+
+.pointsEpic {
+  color: #ffa500;
+  border-color: rgba(255, 165, 0, 0.5);
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.7);
+}
+
+.pointsLegendary {
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.5);
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+}
+
+.achievementDescription {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin: 0.25rem 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.achievementFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.achievementRarity {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Rarity badges */
+.rarityCommon .achievementRarity {
+  color: #ff3333;
+  border-color: rgba(255, 0, 0, 0.5);
+}
+
+.rarityUncommon .achievementRarity {
+  color: #33ff33;
+  border-color: rgba(0, 255, 0, 0.5);
+}
+
+.rarityRare .achievementRarity {
+  color: #9933ff;
+  border-color: rgba(145, 0, 255, 0.5);
+}
+
+.rarityEpic .achievementRarity {
+  color: #ffa500;
+  border-color: rgba(255, 165, 0, 0.5);
+}
+
+.rarityLegendary .achievementRarity {
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.achievementStatus {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statusUnlocked {
+  color: #33ff33;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+.statusLocked {
+  color: #999;
+}
+
+/* Empty state with hacker terminal feel */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  background: rgba(10, 0, 0, 0.7);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  border-radius: 8px;
+  box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1);
+}
+
+.emptyState p {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ff3333;
+  font-size: 1.1rem;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+  animation: terminalBlink 1.5s infinite;
+}
+
+.emptyState p::after {
+  content: '_';
+  animation: cursorBlink 1s infinite step-end;
+}
+
+/* Loading spinner with enhanced cyberpunk styling */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 250px;
+}
+
+.spinner {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #ff3333;
+  border-bottom-color: #ff3333;
+  animation: spin 1.2s linear infinite;
+  position: relative;
+}
+
+.spinner::before,
+.spinner::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+
+.spinner::before {
+  top: 7px;
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
+  border-top-color: #ff6666;
+  border-bottom-color: #ff6666;
+  animation: spin 1.6s linear infinite reverse;
+}
+
+.spinner::after {
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border-top-color: #ff9999;
+  border-bottom-color: #ff9999;
+  animation: spin 1s linear infinite;
+}
+
+.loadingText {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ff3333;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  animation: terminalBlink 1.5s infinite alternate;
+}
+
+/* Error display with glitch effect */
+.errorContainer {
+  padding: 2rem;
+  border-radius: 8px;
+  background: rgba(20, 0, 0, 0.7);
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+  animation: errorPulse 2s infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.errorContainer::before {
+  content: 'ERROR';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 0, 0, 0.8);
+  color: #000;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.errorTitle {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ff3333;
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  text-transform: uppercase;
+  animation: glitchText 3s infinite;
+}
+
+.errorMessage {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ff6666;
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* New achievement badge with enhanced effect */
+.newBadge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #ff0000;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  z-index: 10;
+  animation: newPulse 1.5s infinite alternate;
+  transform: rotate(5deg);
+}
+
+/* Toast notification with futuristic design */
+.achievementNotification {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  backdrop-filter: blur(15px);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+  max-width: 350px;
+  animation: notificationSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.notificationIcon {
+  font-size: 2.5rem;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  animation: iconPulse 2s infinite alternate;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: #ff3333;
+  margin: 0 0 0.4rem 0;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.notificationDesc {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Animation for newly unlocked achievements */
+.newlyUnlocked {
+  animation: achievementUnlocked 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* All Keyframe animations */
+@keyframes pulsingBorder {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glitch-anim-1 {
+  0%, 100% { clip: rect(5px, 9999px, 5px, 0); }
+  10% { clip: rect(30px, 9999px, 10px, 0); }
+  20% { clip: rect(10px, 9999px, 40px, 0); }
+  30% { clip: rect(50px, 9999px, 15px, 0); }
+  40% { clip: rect(25px, 9999px, 60px, 0); }
+  50% { clip: rect(35px, 9999px, 75px, 0); }
+  60% { clip: rect(15px, 9999px, 30px, 0); }
+  70% { clip: rect(60px, 9999px, 45px, 0); }
+  80% { clip: rect(35px, 9999px, 70px, 0); }
+  90% { clip: rect(10px, 9999px, 85px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0%, 100% { clip: rect(15px, 9999px, 75px, 0); }
+  10% { clip: rect(60px, 9999px, 35px, 0); }
+  20% { clip: rect(30px, 9999px, 25px, 0); }
+  30% { clip: rect(15px, 9999px, 45px, 0); }
+  40% { clip: rect(60px, 9999px);}
+}
