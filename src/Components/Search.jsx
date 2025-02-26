@@ -21,63 +21,37 @@ const questions = {
   },
   '2': {
     id: '2',
-    title: 'Rotten Secrets',
+    title: 'Solo Leveling',
     difficulty: 'medium',
     points: 150,
-    description: 'Are you familiar with ROT13, a simple encryption technique used in cryptography?\n\nPLO3EA3K4{gu3_e0gg3a_frpe3gf}',
-    link: null,
+    description: 'Web exploitation refers to the practice of identifying and exploiting vulnerabilities in web applications, websites, and online services.',
+    link: "https://delicate-babka-d0d7b8.netlify.app/",
     // Hash for "CYB3RN3X4{th3_r0tt3n_secr3ts}" (normalized)
-    answer: 'dcd19ecd19ab8238691719ca955d2fae1d723140f405bf0615f2517e3cb04a7b',
+    answer: 'd4926f0cfe8a7fceb5780d8775f7e6673984953af67a83b38e7ed9ce360e3658',
     hints: [
-      "ROT13 replaces each letter with the letter 13 positions after it",
-      "Numbers remain unchanged in ROT13",
-      "Try an online ROT13 decoder"
+      "Check the browser's Inspect Element for hidden clues or vulnerabilities",
+      "User input can be exploited if not properly validated and sanitized",
+      "Try using online security tools to test for web application weaknesses"  
     ]
+
   },
+  
   '3': {
     id: '3',
-    title: 'Layers of Message',
-    difficulty: 'hard',
-    points: 200,
-    description: 'Within a cryptographic maze, a hidden message lies in wait. Your task is to decipher the layers of transformation that mask the truth beneath.\n\nVm0xNFlWVXhTWGxVV0doVFYwZFNUMVV3Wkc5V1ZteFpZMGhPVlUxV1NsaFhhMlIzWVRBeFdWRnNXbFpOVmtwSVdWUktTMVl4VG5KaFJsWk9WbXR3UlZkV1dsWmxSMDVZVTJ0b1RsWnRhRmhhVjNSaFUxWmtWMVZyWkdsaVZscFhWREZhYjFSc1duUmxSVGxhVmtWYU0xcEZXbXRXVmtaMFQxWlNUbUpGY0RaWFYzUnZWVEpLUjFOWWNHaFRSVXBZVkZWYVMxSkdXa1pTVkd4UlZWUXdPUT09',
-    link: null,
-    // Replace with actual hash
-    answer: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    hints: [
-      "This is a multi-layered encoding",
-      "One of the layers is Base64",
-      "Try decoding multiple times"
-    ]
-  },
-  '4': {
-    id: '4',
-    title: 'Journey Through Vigenère',
+    title: 'Find the Seal',
     difficulty: 'hard',
     points: 250,
-    description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
-    link: null,
-    // Replace with actual hash
-    answer: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    hints: [
-      "The keyword is hidden in plain sight",
-      "Look for the emphasized word in the description",
-      "Vigenère cipher uses a keyword for encryption"
-    ]
-  },
-  '5': {
-    id: '5',
-    title: 'Journey Through Vigenère',
-    difficulty: 'hard',
-    points: 250,
-    description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
+    description: "Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text",
     link: 'https://drive.google.com/file/d/1BuhxuOo48xcj5ZpO3zKtqwMip3eCZRYC/view?usp=sharing',
     // Same as question 4
     answer: '55ee56ffca88287aa92cb6efdb21311799806aac6e16f6312167f2abd4d40b90',
     hints: [
-      "The keyword is hidden in plain sight",
-      "Look for the emphasized word in the description",
-      "Vigenère cipher uses a keyword for encryption"
-    ] 
+      "Try using OCR tools like Tesseract or Google Vision API",
+      "Enhancing the image (contrast, brightness) can improve text recognition",
+      "Check if the text is embedded as an image or selectable text"
+    
+    ]
+
   }
 };
 

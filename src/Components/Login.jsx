@@ -75,9 +75,9 @@ function Login() {
       // Sign in anonymously
       const { user } = await signInAnonymously(auth);
       
-      // Set up session time (60 minutes from now)
+      // Set up session time (5 minutes from now)
       const startTime = new Date();
-      const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 60 minutes
+      const endTime = new Date(startTime.getTime() + 5 * 60 * 1000); // 5 minutes
 
       // Create user document
       await setDoc(doc(db, 'users', user.uid), {
@@ -94,7 +94,7 @@ function Login() {
       setTimeout(() => {
         auth.signOut();
         navigate('/game-over');
-      }, 60 * 60 * 1000); // 60 minutes
+      }, 5 * 60 * 1000); // 5 minutes
 
       navigate('/');
     } catch (error) {
@@ -152,7 +152,7 @@ useEffect(() => {
     
     <div className="welcome-section">
         <h1 className="welcome-title">CTF CYB3R AR3NA</h1>
-        <p className="welcome-subtitle">You have 60 minutes to complete the challenge</p>
+        <p className="welcome-subtitle">You have 5 minutes to complete the challenge</p>
     </div>
 
     <div className="form-container">

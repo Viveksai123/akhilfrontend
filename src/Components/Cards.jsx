@@ -5,19 +5,50 @@ import { signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+// Format time function for displaying average time
+const formatTime = (milliseconds) => {
+  const seconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
 function GameOver() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [loggedOut, setLoggedOut] = useState(false); // Track logout state
   
+  // Immediately attempt to log user out when component mounts
   useEffect(() => {
+    // Immediately execute logout
+    const immediateLogout = async () => {
+      try {
+        // If user exists, log them out
+        if (auth.currentUser) {
+          await signOut(auth);
+          console.log("User immediately logged out on GameOver page load");
+        } else {
+          console.log("No user to log out on immediate check");
+        }
+      } catch (error) {
+        console.error("Error during immediate logout:", error);
+      }
+    };
+    
+    // Call the function right away
+    immediateLogout();
+  }, []);
+  
+  // Then proceed with the rest of initialization
+  useEffect(() => {
+    // First, ensure we try to get user data if there's a logged-in user
     const fetchUserStats = async () => {
       try {
-        // Store the UID before signing out
+        // Get current user ID if available
         const uid = auth.currentUser?.uid;
         
         if (uid) {
+          // Get user data before logging out
           const userDocRef = doc(db, 'users', uid);
           const userDoc = await getDoc(userDocRef);
           
@@ -33,18 +64,31 @@ function GameOver() {
         console.error("Error fetching user stats:", error);
         setLoading(false);
       }
-      
-      // Sign out the user
+    };
+    
+    // Next, ensure user is definitely logged out, regardless of
+    // whether they were already logged out by the Navbar component
+    const ensureUserLogout = async () => {
       try {
-        await signOut(auth);
-        console.log("User logged out");
-        setLoggedOut(true); // Set logged out state to true
+        // Check if there's a user to log out
+        if (auth.currentUser) {
+          await signOut(auth);
+          console.log("User logged out successfully from GameOver component");
+        } else {
+          console.log("No user to log out - already logged out");
+        }
       } catch (error) {
-        console.error("Logout error:", error);
+        console.error("Error during logout:", error);
       }
     };
     
-    fetchUserStats();
+    // Run both operations in sequence
+    const initialize = async () => {
+      await fetchUserStats();
+      await ensureUserLogout();
+    };
+    
+    initialize();
     
     // Redirect to login after 60 seconds
     const timer = setTimeout(() => {
@@ -54,19 +98,18 @@ function GameOver() {
     return () => clearTimeout(timer);
   }, [navigate]);
   
-  const handleBackToLogin = () => {
-    if (loggedOut) {
-      navigate('/login', { replace: true }); // Use replace to prevent history issues
-    } else {
-      // If not logged out yet, try to log out first
-      signOut(auth).then(() => {
-        navigate('/login', { replace: true });
-      }).catch(error => {
-        console.error("Error signing out:", error);
-        // Still try to navigate even if there's an error
-        navigate('/login', { replace: true });
-      });
+  const handleBackToLogin = async () => {
+    // Perform a final logout check before navigating
+    try {
+      if (auth.currentUser) {
+        await signOut(auth);
+      }
+    } catch (error) {
+      console.error("Error during final logout check:", error);
     }
+    
+    // Then navigate to login
+    navigate('/login?from=gameover', { replace: true });
   };
   
   return (

@@ -13,36 +13,20 @@ function QuestionList() {
     },
     {
       id: '2',
-      title: 'Rotten Secrets',
+      title: 'Solo Leveling',
       difficulty: 'medium',
       points: 150,
-      description: 'Are you familiar with ROT13, a simple encryption technique used in cryptography?\n\nPLO3EA3K4{gu3_e0gg3a_frpe3gf}',
+      description: 'Web exploitation refers to the practice of identifying and exploiting vulnerabilities in web applications, websites, and online services.',
       answer: 'hello'
     },{
       id: '3',
-      title: 'Layers of Message',
-      difficulty: 'hard',
-      points: 200,
-      description: 'Within a cryptographic maze, a hidden message lies in wait. Your task is to decipher the layers of transformation that mask the truth beneath.\n\nVm0xNFlWVXhTWGxVV0doVFYwZFNUMVV3Wkc5V1ZteFpZMGhPVlUxV1NsaFhhMlIzWVRBeFdWRnNXbFpOVmtwSVdWUktTMVl4VG5KaFJsWk9WbXR3UlZkV1dsWmxSMDVZVTJ0b1RsWnRhRmhhVjNSaFUxWmtWMVZyWkdsaVZscFhWREZhYjFSc1duUmxSVGxhVmtWYU0xcEZXbXRXVmtaMFQxWlNUbUpGY0RaWFYzUnZWVEpLUjFOWWNHaFRSVXBZVkZWYVMxSkdXa1pTVkd4UlZWUXdPUT09',
-      answer: 'hello'
-    },
-    {
-      id: '4',
-      title: 'Journey Through Vigenère',
-      difficulty: 'hard',
-      points: 250,
-      description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
-      answer: 'hello'
-    },
-
-    {
-      id: '5',
       title: 'Find the Seal',
       difficulty: 'hard',
-      points: 250,
-      description: "Step into the complex world of 'CRYPTO' GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher.\n\nAHD3CU3J4{T1P3P3C3_P5_RSW}",
+      points: 200,
+      description: 'Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text',
       answer: 'hello'
     },
+    
     // Add other questions here
   ]);
 

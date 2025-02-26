@@ -5,7 +5,7 @@ import { auth, db } from '../firebase';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 function Navbar() {
-  const [timeRemaining, setTimeRemaining] = useState('60:00');
+  const [timeRemaining, setTimeRemaining] = useState('5:00');
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -74,10 +74,19 @@ function Navbar() {
   const handleTimeUp = async () => {
     try {
       if (timerRef.current) clearInterval(timerRef.current);
+      
+      // First, sign out the user
       await auth.signOut();
-      navigate('/game-over');
+      
+      // Then navigate to game-over route
+      // Using a small timeout to ensure the signOut completes
+      setTimeout(() => {
+        navigate('/game-over');
+      }, 100);
     } catch (error) {
       console.error('Error handling time up:', error);
+      // Attempt to navigate to game-over even if there was an error with logout
+      navigate('/game-over');
     }
   };
 

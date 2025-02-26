@@ -146,8 +146,15 @@ function QuestionDetail() {
       // console.log("Normalized:", normalizeInput(answer));
       // console.log("Hashed answer:", hashedAnswer);
       // console.log("Expected hash:", question.answer);
+      // Add this right before the if (hashedAnswer === question.answer) { line
+console.log("Challenge ID:", id);
+console.log("Original answer:", answer);
+console.log("Normalized answer:", normalizeInput(answer));
+console.log("Generated hash:", hashedAnswer);
+console.log("Expected hash:", question.answer);
       
       if (hashedAnswer === question.answer) {
+        
         // Award full points - don't subtract for hints again since 
         // points were already deducted when hints were revealed
         const earnedPoints = question.points;
