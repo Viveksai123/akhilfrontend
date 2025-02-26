@@ -284,45 +284,100 @@ const FloatingGroupChat = () => {
     validateQuestionsLoaded();
   }, []);
 
-  // Check if a message contains a flag using multiple detection methods
-// Updated checkForFlag function to properly validate answers
-const checkForFlag = (message) => {
-  if (!validateQuestionsLoaded()) {
-    console.error("Cannot check flag: questions not properly loaded");
-    return false;
-  }
-  
-  try {
-    // Normalize and hash the message using the same logic as in QuestionDetail.jsx
-    function normalizeInput(input) {
-      return input
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, ' ')
-        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-        .replace(/\s+$/g, '');
+  // Function to normalize text for comparison
+  const normalizeInput = (input) => {
+    return input
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+      .replace(/\s+$/g, '');
+  };
+
+  // Updated checkForFlag function to detect answers within message text
+  const checkForFlag = (message) => {
+    if (!validateQuestionsLoaded()) {
+      console.error("Cannot check flag: questions not properly loaded");
+      return false;
     }
     
-    // First check the raw message against the question.answer hashes
-    const normalizedMessage = normalizeInput(message);
-    const hashedMessage = SHA256(normalizedMessage).toString();
-    
-    // Check if any question's answer hash matches
-    const hashMatch = Object.values(questions).some(q => q.answer === hashedMessage);
-    
-    // For debugging
-    console.log("Message:", message);
-    console.log("Normalized:", normalizedMessage);
-    console.log("Hash:", hashedMessage);
-    console.log("Hash match:", hashMatch);
-    
-    // Return true if we found a match (this will block the message)
-    return hashMatch;
-  } catch (error) {
-    console.error("Error in checkForFlag:", error);
-    return false;
-  }
-};
+    try {
+      // Get all question answers
+      const allAnswers = [];
+      
+      // Process each question to extract possible answers
+      Object.values(questions).forEach(question => {
+        if (question.answer) {
+          // For each question, we'll try to "reverse" the hash to get potential answers
+          // Since we can't actually reverse the hash, we'll store the hash itself
+          allAnswers.push({
+            hash: question.answer,
+            questionId: question.id
+          });
+        }
+      });
+      
+      // If there are no answers to check, exit early
+      if (allAnswers.length === 0) {
+        console.log("No answers to check against");
+        return false;
+      }
+      
+      // First approach: Check if the exact message matches an answer
+      const exactMatch = allAnswers.some(answer => {
+        const normalizedMessage = normalizeInput(message);
+        const hashedMessage = SHA256(normalizedMessage).toString();
+        return hashedMessage === answer.hash;
+      });
+      
+      if (exactMatch) {
+        console.log("Exact answer match found");
+        return true;
+      }
+      
+      // Second approach: Check if the message contains an answer
+      // Break the message into words and check different combinations
+      const words = message.split(/\s+/);
+      
+      // Check all possible word combinations
+      for (let startIdx = 0; startIdx < words.length; startIdx++) {
+        for (let length = 1; length <= words.length - startIdx; length++) {
+          const phrase = words.slice(startIdx, startIdx + length).join(' ');
+          const normalizedPhrase = normalizeInput(phrase);
+          const hashedPhrase = SHA256(normalizedPhrase).toString();
+          
+          // Check if this phrase matches any answer
+          const phraseMatch = allAnswers.some(answer => hashedPhrase === answer.hash);
+          
+          if (phraseMatch) {
+            console.log("Partial answer match found in phrase:", phrase);
+            return true;
+          }
+        }
+      }
+      
+      // Split by common delimiters to catch answers that might be embedded without spaces
+      const segments = message.split(/[.,;:!?\s\-_]/);
+      for (const segment of segments) {
+        if (segment.trim().length > 0) {
+          const normalizedSegment = normalizeInput(segment);
+          const hashedSegment = SHA256(normalizedSegment).toString();
+          
+          const segmentMatch = allAnswers.some(answer => hashedSegment === answer.hash);
+          if (segmentMatch) {
+            console.log("Answer match found in segment:", segment);
+            return true;
+          }
+        }
+      }
+      
+      // No matches found
+      return false;
+    } catch (error) {
+      console.error("Error in checkForFlag:", error);
+      return false;
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -420,10 +475,10 @@ const checkForFlag = (message) => {
     try {
       console.log("Checking message:", messageText);
       
-      // Check if the message is a flag
-      const isFlag = checkForFlag(messageText);
+      // Check if the message contains a flag
+      const hasFlag = checkForFlag(messageText);
       
-      if (isFlag) {
+      if (hasFlag) {
         console.log("FLAG DETECTED - blocking message");
         setError('Sharing answers is not allowed!');
         setTimeout(() => setError(''), 3000);
