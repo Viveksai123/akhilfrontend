@@ -18,7 +18,7 @@ const achievements = [
   {
     id: 'speed_solve',
     title: 'Speed Demon',
-    description: 'Solve any question in under 2 minutes',
+    description: 'Solve any question in under 1 minutes',
     icon: '⚡',
     rarity: 'rare',
     points: 30,
@@ -29,7 +29,7 @@ const achievements = [
         const startTime = new Date(userData.startTime).getTime();
         return solveTime - startTime;
       });
-      return solveTimesMs.length > 0 && Math.min(...solveTimesMs) < 120000; // 2 minutes in milliseconds
+      return solveTimesMs.length > 0 && Math.min(...solveTimesMs) < 60000; // 2 minutes in milliseconds
     }
   },
   {
@@ -236,7 +236,7 @@ function AchievementSystem() {
           </div>
           
           <div className={styles.statItem}>
-            <p className={styles.statLabel}>Points</p>
+            <p className={styles.statLabel}>%</p>
             <p className={styles.statValue}>{totalPoints}</p>
           </div>
         </div>
@@ -294,7 +294,7 @@ function AchievementSystem() {
                   <div className={styles.achievementHeader}>
                     <h3 className={styles.achievementTitle}>{achievement.title}</h3>
                     <span className={`${styles.achievementPoints} ${isUnlocked ? styles[pointsClass] : ''}`}>
-                      {achievement.points} pts
+                      {achievement.points} %
                     </span>
                   </div>
                   

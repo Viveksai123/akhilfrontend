@@ -9,6 +9,7 @@ function GameOver() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loggedOut, setLoggedOut] = useState(false); // Track logout state
   
   useEffect(() => {
     const fetchUserStats = async () => {
@@ -37,6 +38,7 @@ function GameOver() {
       try {
         await signOut(auth);
         console.log("User logged out");
+        setLoggedOut(true); // Set logged out state to true
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -46,22 +48,25 @@ function GameOver() {
     
     // Redirect to login after 60 seconds
     const timer = setTimeout(() => {
-      navigate('/login');
+      navigate('/login', { replace: true }); // Use replace to prevent history issues
     }, 60000);
     
     return () => clearTimeout(timer);
   }, [navigate]);
   
   const handleBackToLogin = () => {
-    navigate('/login');
-  };
-  
-  // Format time function (converts minutes:seconds to a readable format)
-  const formatTime = (timeString) => {
-    if (!timeString) return "Not available";
-    
-    const [minutes, seconds] = timeString.split(':');
-    return `${minutes} minutes ${seconds} seconds`;
+    if (loggedOut) {
+      navigate('/login', { replace: true }); // Use replace to prevent history issues
+    } else {
+      // If not logged out yet, try to log out first
+      signOut(auth).then(() => {
+        navigate('/login', { replace: true });
+      }).catch(error => {
+        console.error("Error signing out:", error);
+        // Still try to navigate even if there's an error
+        navigate('/login', { replace: true });
+      });
+    }
   };
   
   return (
