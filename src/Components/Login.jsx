@@ -248,7 +248,7 @@ function Login() {
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
                 className="form-input"
-                placeholder={`Enter ${nextAvailable}`}
+                placeholder={`Enter UserName`}
               />
               <div className="input-highlight"></div>
             </div>

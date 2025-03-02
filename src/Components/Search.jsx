@@ -39,7 +39,7 @@ const questions = {
   '3': {
     id: '3',
     title: 'Find the Seal',
-    difficulty: 'hard',
+    difficulty: 'medium',
     points: 250,
     description: "Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text",
     link: 'https://drive.google.com/file/d/1BuhxuOo48xcj5ZpO3zKtqwMip3eCZRYC/view?usp=sharing',

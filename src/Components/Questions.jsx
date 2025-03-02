@@ -21,7 +21,7 @@ function QuestionList() {
     },{
       id: '3',
       title: 'Find the Seal',
-      difficulty: 'hard',
+      difficulty: 'medium',
       points: 200,
       description: 'Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text',
       answer: 'hello'

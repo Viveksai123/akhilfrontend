@@ -1160,7 +1160,7 @@ body, html {
 }
 
 .difficulty-hard .difficulty-title {
-    color: #ff0000;
+    color: gold;
     border-bottom: 2px solid rgba(255, 0, 0, 0.3);
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
@@ -1171,11 +1171,11 @@ body, html {
 }
 
 .difficulty-hard .question-title {
-    color: #ff0000;
+    color:gold;
 }
 
 .difficulty-hard .question-points {
-    color: rgba(255, 0, 0, 0.8);
+    color: greenyellow;
 }
 
 .difficulty-hard .question-card:hover {
@@ -1224,7 +1224,7 @@ body, html {
 }
 
 .difficulty-hard .question-solved::after {
-    color: #ff0000;
+    color: gold;
 }
 
 /* Responsive Design */
@@ -1313,8 +1313,8 @@ body, html {
 
 .qd-difficulty-hard {
     background: rgba(255, 0, 0, 0.1);
-    color: #ff0000;
-    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: gold;
+    border: 1px solid rgb(255, 187, 0);
 }
 
 .qd-points {
@@ -2326,4 +2326,9 @@ html, body {
     100% {
       transform: translate(0);
     }
+  }
+
+  *{
+    border-width: 3px !important;
+    
   }
