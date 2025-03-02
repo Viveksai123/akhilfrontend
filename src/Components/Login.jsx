@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInAnonymously } from 'firebase/auth';
-import { setDoc, doc, collection, query, where, getDocs } from 'firebase/firestore';
+import { setDoc, doc, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
 function Login() {
@@ -41,17 +41,58 @@ function Login() {
     }
   };
 
+  const getNextAvailableUsername = async () => {
+    try {
+      // Check if sequence document exists
+      const sequenceRef = doc(db, 'system', 'sequence');
+      const sequenceDoc = await getDoc(sequenceRef);
+      
+      if (!sequenceDoc.exists()) {
+        // Initialize sequence document if it doesn't exist
+        await setDoc(sequenceRef, { currentNumber: 1 });
+        return 'A1';
+      }
+      
+      const { currentNumber } = sequenceDoc.data();
+      
+      // Check if we've reached the limit
+      if (currentNumber > 200) {
+        return null; // No more usernames available
+      }
+      
+      return `A${currentNumber}`;
+    } catch (error) {
+      console.error('Error getting next username:', error);
+      throw error;
+    }
+  };
+
+  const incrementSequence = async () => {
+    try {
+      // Get a reference to the sequence document
+      const sequenceRef = doc(db, 'system', 'sequence');
+      const sequenceDoc = await getDoc(sequenceRef);
+      
+      if (!sequenceDoc.exists()) {
+        throw new Error('Sequence document not found');
+      }
+      
+      const { currentNumber } = sequenceDoc.data();
+      
+      // Increment the sequence
+      await setDoc(sequenceRef, { currentNumber: currentNumber + 1 });
+    } catch (error) {
+      console.error('Error incrementing sequence:', error);
+      throw error;
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     
     // Validate username
     if (!username.trim()) {
       setError('Please enter a username');
-      return;
-    }
-
-    if (username.length < 3) {
-      setError('Username must be at least 3 characters long');
       return;
     }
 
@@ -64,7 +105,23 @@ function Login() {
     setError('');
 
     try {
-      // Check if username is taken
+      // Get the next available username in sequence
+      const nextUsername = await getNextAvailableUsername();
+      
+      if (!nextUsername) {
+        setError('No more login slots available. Maximum user limit reached.');
+        setLoading(false);
+        return;
+      }
+      
+      // Check if the entered username matches the expected next username
+      if (username.trim() !== nextUsername) {
+        setError(`Invalid username. Please try again.`);
+        setLoading(false);
+        return;
+      }
+
+      // Check if username is taken (double-check)
       const exists = await checkUsernameExists(username);
       if (exists) {
         setError('Username already taken. Please choose another.');
@@ -89,6 +146,9 @@ function Login() {
         createdAt: startTime.toISOString(),
         lastActive: startTime.toISOString()
       });
+      
+      // Increment the sequence for the next user
+      await incrementSequence();
 
       // Set up auto logout
       setTimeout(() => {
@@ -105,108 +165,124 @@ function Login() {
     }
   };
 
-  // Add this to your Login component
-
-useEffect(() => {
-  const createMatrixLine = () => {
+  useEffect(() => {
+    const createMatrixLine = () => {
       const line = document.createElement('div');
       line.className = 'matrix-line';
       line.style.left = `${Math.random() * 100}%`;
       line.style.height = `${Math.random() * 50 + 20}%`;
       line.style.animationDuration = `${Math.random() * 2 + 2}s`;
       
-      document.querySelector('.matrix-bg').appendChild(line);
-      
-      // Remove the line after animation
-      line.addEventListener('animationend', () => {
+      const matrixBg = document.querySelector('.matrix-bg');
+      if (matrixBg) {
+        matrixBg.appendChild(line);
+        
+        // Remove the line after animation
+        line.addEventListener('animationend', () => {
           line.remove();
-      });
-  };
+        });
+      }
+    };
 
-  // Create initial lines
-  for (let i = 0; i < 20; i++) {
+    // Create initial lines
+    for (let i = 0; i < 20; i++) {
       createMatrixLine();
-  }
+    }
 
-  // Continue creating lines
-  const interval = setInterval(createMatrixLine, 200);
+    // Continue creating lines
+    const interval = setInterval(createMatrixLine, 200);
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Added: Function to display the next available username
+  const [nextAvailable, setNextAvailable] = useState('');
+  
+  useEffect(() => {
+    const fetchNextUsername = async () => {
+      try {
+        const next = await getNextAvailableUsername();
+        setNextAvailable(next || 'No more usernames available');
+      } catch (error) {
+        console.error('Error fetching next username:', error);
+      }
+    };
+    
+    fetchNextUsername();
+  }, []);
 
   return (
-    // Inside your Login component return statement
-<div 
-  className="login-page" 
-  style={{ 
-    overflow: 'hidden !important',
-    overflowY: 'hidden !important',
-    overflowX: 'hidden !important',
-    position: 'relative !important',
-    scrollBehavior: 'none !important',
-    msOverflowStyle: 'none !important',
-    scrollbarWidth: 'none !important'
-  }}
->
-    <div className="matrix-bg"></div>
-    
-    <div className="welcome-section">
+    <div 
+      className="login-page" 
+      style={{ 
+        overflow: 'hidden !important',
+        overflowY: 'hidden !important',
+        overflowX: 'hidden !important',
+        position: 'relative !important',
+        scrollBehavior: 'none !important',
+        msOverflowStyle: 'none !important',
+        scrollbarWidth: 'none !important'
+      }}
+    >
+      <div className="matrix-bg"></div>
+      
+      <div className="welcome-section">
         <h1 className="welcome-title">CTF CYB3R AR3NA</h1>
         <p className="welcome-subtitle">You have 5 minutes to complete the challenge</p>
-    </div>
+        <p className="sequence-info">Next available username: {nextAvailable}</p>
+      </div>
 
-    <div className="form-container">
+      <div className="form-container">
         <form onSubmit={handleLogin}>
-            <div className="form-group">
-                <label htmlFor="username" className="form-label">
-                    Username
-                </label>
-                <div className="input-wrapper">
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        required
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        disabled={loading}
-                        className="form-input"
-                        placeholder="Enter your username"
-                    />
-                    <div className="input-highlight"></div>
-                </div>
-            </div>
-
-            {error && (
-                <div className="error-message">
-                    <svg 
-                        viewBox="0 0 20 20" 
-                        fill="currentColor" 
-                        className="error-icon"
-                        width="20"
-                        height="20"
-                    >
-                        <path 
-                            fillRule="evenodd" 
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" 
-                            clipRule="evenodd" 
-                        />
-                    </svg>
-                    {error}
-                </div>
-            )}
-
-            <button
-                type="submit"
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
+            <div className="input-wrapper">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 disabled={loading}
-                className={`submit-button ${loading ? 'loading' : ''}`}
-            >
-                {loading ? 'Processing...' : 'Start Challenge'}
-            </button>
-        </form>
-    </div>
-</div>
+                className="form-input"
+                placeholder={`Enter ${nextAvailable}`}
+              />
+              <div className="input-highlight"></div>
+            </div>
+          </div>
 
+          {error && (
+            <div className="error-message">
+              <svg 
+                viewBox="0 0 20 20" 
+                fill="currentColor" 
+                className="error-icon"
+                width="20"
+                height="20"
+              >
+                <path 
+                  fillRule="evenodd" 
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" 
+                  clipRule="evenodd" 
+                />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`submit-button ${loading ? 'loading' : ''}`}
+          >
+            {loading ? 'Processing...' : 'Start Challenge'}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 
