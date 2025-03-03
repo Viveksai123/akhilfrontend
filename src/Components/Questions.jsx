@@ -17,7 +17,7 @@ function QuestionList() {
       id: '2',
       title: 'Solo Leveling',
       difficulty: 'medium',
-      points: 150,
+      points: 170,
       description: 'Web exploitation refers to the practice of identifying and exploiting vulnerabilities in web applications, websites, and online services.',
       answer: 'hello'
     },
@@ -25,10 +25,83 @@ function QuestionList() {
       id: '3',
       title: 'Find the Seal',
       difficulty: 'medium',
-      points: 200,
+      points: 180,
       description: 'Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text',
       answer: 'hello'
     },
+    {
+      id: '4',
+      title: 'Rotten Secrets',
+      difficulty: 'easy',
+      points: 120,
+      description: 'Are you familiar with ROT13, a simple encryption technique used in cryptography?',
+      answer: 'hello'
+    },
+    {
+      id: '5',
+      title: 'Layers of Message',
+      difficulty: 'easy',
+      points: 130,
+      description: 'Unravel the cryptographic maze by peeling away layers of transformation to reveal the hidden message. Use multiple decoding techniques to decrypt the truth beneath the encryption.',
+      answer: 'hello'
+    },
+    {
+      id: '6',
+      title: 'Journey Through Vigenere',
+      difficulty: 'easy',
+      points: 150,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+    {
+      id: '7',
+      title: 'MYSTERIES IN THE MARGINS - THE HIDDEN PDF QUEST',
+      difficulty: 'medium',
+      points: 190,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+
+    {
+      id: '8',
+      title: 'Reyansh College: The Hex Cipher Odyssey',
+      difficulty: 'medium',
+      points: 200,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+    {
+      id: '9',
+      title: 'Operation bhAAi: The Digital Trail',
+      difficulty: 'hard',
+      points: 220,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+    {
+      id: '10',
+      title: 'Cipher Cascade',
+      difficulty: 'hard',
+      points: 240,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+    {
+      id: '11',
+      title: 'Encrypted flag quest',
+      difficulty: 'hard',
+      points: 260,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    },
+    {
+      id: '12',
+      title: 'Scrambled Vision',
+      difficulty: 'hard',
+      points: 300,
+      description: 'Decode the Vigenère cipher, unravel the mystery, and reveal the hidden flag. Can you crack the code?',
+      answer: 'hello'
+    }
     // Add other questions here
   ]);
 

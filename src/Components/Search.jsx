@@ -23,7 +23,7 @@ const questions = {
     id: '2',
     title: 'Solo Leveling',
     difficulty: 'medium',
-    points: 150,
+    points: 170,
     description: 'Web exploitation refers to the practice of identifying and exploiting vulnerabilities in web applications, websites, and online services.',
     link: "https://delicate-babka-d0d7b8.netlify.app/",
     // Hash for "CYB3RN3X4{th3_r0tt3n_secr3ts}" (normalized)
@@ -40,7 +40,7 @@ const questions = {
     id: '3',
     title: 'Find the Seal',
     difficulty: 'medium',
-    points: 250,
+    points: 180,
     description: "Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text",
     link: 'https://drive.google.com/file/d/1BuhxuOo48xcj5ZpO3zKtqwMip3eCZRYC/view?usp=sharing',
     // Same as question 4
@@ -52,7 +52,133 @@ const questions = {
     
     ]
 
-  }
+  },
+  '4': {
+    id: '4',
+    title: 'Rotten Secrets',
+    difficulty: 'easy',
+    points: 120,
+    description: "Are you familiar with ROT13, a simple encryption technique used in cryptography? \n\PLO3EA3K4{gu3_e0gg3a_frpe3gf}",
+    link: null,
+    answer: 'dcd19ecd19ab8238691719ca955d2fae1d723140f405bf0615f2517e3cb04a7b',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'5': {
+    id: '5',
+    title: 'Layers of Message',
+    difficulty: 'easy',
+    points: 130,
+    description: "Within a cryptographic maze, a hidden message lies in wait. Your task is to decipher the layers of transformation that mask the truth beneath. Put your analytical skills to the test to untangle this complex web and uncover the concealed message.(Multiple decoding is always good) ",
+    link: 'https://drive.google.com/file/d/1OaAOQe1Eh8sdQFuut-ZRaa_dau7t4nn_/view?usp=sharing',
+    answer: 'f82628a55243b23a663a0ab78e197e77e1c6e0da305f5307754a6d8199d225d8',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'6': {
+    id: '6',
+    title: 'Journey Through Vigenere',
+    difficulty: 'easy',
+    points: 150,
+    description: "Step into the complex world of 'CRYPTO'GRAPHY, where your problem-solving abilities will be tested by the mysterious Vigenère cipher. This multi-layered puzzle challenges you to decipher an encrypted message and uncover the hidden flag at its heart. Armed with sharp intuition and analytical thinking, take on this exciting intellectual journey and unlock the secrets within! \n\n\EPZ3GG3L4{X1XCC3KF3_15_F3T0B3S}",
+    link: null,
+    answer: '2f37a668e6cca2b63d5d428fccccf3af9a8e576b67a210be32777008fcb37d73',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'7': {
+    id: '7',
+    title: 'MYSTERIES IN THE MARGINS - THE HIDDEN PDF QUEST',
+    difficulty: 'medium',
+    points: 190,
+    description: "Dive into the depths of a seemingly ordinary PDF that guards a well-concealed secret. The document's innocent appearance masks a clever riddle, waiting for a keen investigator to decode its enigma. Use your analytical skills and digital forensics expertise to expose the hidden truth lurking within its layers.",
+    link: 'https://drive.google.com/file/d/1cLC7I-N3S4QDed13lu6ieg94ugFwN2ZV/view?usp=sharing',
+    answer: '0ecd32cedb88ad440027034e794b6e3f31931a939db37043e3e7dd077fb6f253',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'8': {
+    id: '8',
+    title: 'Reyansh College: The Hex Cipher Odyssey',
+    difficulty: 'medium',
+    points: 200,
+    description: "Welcome to the challenge where hidden secrets meet cutting-edge cryptography. Reyansh College has released its registration data—an intricate digital puzzle that hides a mysterious hex digest. Your mission is to delve into the registration details, extract the concealed hex digest, and decode it to reveal the ultimate flag.",
+    link: 'https://drive.google.com/file/d/12OvPRCOPH1j_xvUihmyq5Ph5rfYpsI3v/view?usp=sharing',
+    answer: '8a8b443e7b51093160335f29189d3e475a97b751932afe1ffdf542c08ad5f6c8',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'9': {
+    id: '9',
+    title: 'Operation bhAAi: The Digital Trail',
+    difficulty: 'hard',
+    points: 220,
+    description: "bhAAi has mysteriously vanished into the vast realm of the internet, leaving behind a series of cryptic clues across public profiles, online forums, and embedded metadata. In this OSINT challenge, your mission is to become a digital detective. Explore various online resources, analyze geo-tags, decode hidden metadata, and connect the dots from seemingly unrelated pieces of information to uncover bhAAi’s true whereabouts.",
+    link: null,
+    answer: '39fa1a707c72cd545a510fb15e505287af0bf71e2445938bfc6ec6b9d7b53af9',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'10': {
+    id: '10',
+    title: 'Cipher Cascadey',
+    difficulty: 'hard',
+    points: 240,
+    description: "A cryptic transmission has just been intercepted, but its contents appear to be completely jumbled. Fortunately, the key to the cipher is subtly hidden at the very beginning of the message. Can you unravel this substitution puzzle? Download the encrypted file to start your investigation.",
+    link: 'https://drive.google.com/file/d/1pZiGA6HO5VLSF7YumY0KMbgd0FZtfUSQ/view?usp=sharing',
+    answer: '022f6e6cc918f979efc22d24bdb31a44b5874a2e28fb05782998bb58b058e786',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'11': {
+    id: '11',
+    title: 'Encrypted flag quest',
+    difficulty: 'hard',
+    points: 260,
+    description: "A multi-layered encryption challenge where the flag is hidden within a complex system of encoding and transposition. The ciphertext includes a mix of letters, numbers, and symbols, designed to confuse and mislead. Use your cryptographic skills to decode the message and uncover the flag.",
+    link: 'https://drive.google.com/file/d/1fUQutBY4GNldE8hhg1b30JjxL-xxyknw/view?usp=sharing',
+    answer: '3f80b85565e980680027b270a86300275a58c76903b4ed8882a6f5c23ba74610',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
+'12': {
+    id: '12',
+    title: 'Scrambled Vision Description',
+    difficulty: 'hard',
+    points: 300,
+    description: "Something seems off... We found two strange image fragments, but they don’t make sense on their own. Can you figure out how to put them back together and reveal the hidden message?",
+    link: 'https://drive.google.com/file/d/1mliiNjwYSpgw9GZBPODkwvuak7gKzfUW/view?usp=sharing',
+    answer: '5315fa562d5a69d349e6cefe5a41887ecd3eebfdbf9c4bba7e3e071f509b6242',
+    hints: [
+      "Try applying ROT13 decryption to the given text",
+      "Not all characters may be encoded—focus on the alphanumeric parts",
+      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
+    ]
+},
 };
 
 export default questions;
