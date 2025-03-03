@@ -105,6 +105,14 @@ function Login() {
     setError('');
 
     try {
+      // Check if username is taken (first check)
+      const exists = await checkUsernameExists(username);
+      if (exists) {
+        setError('Already logged in. Please use a different username.');
+        setLoading(false);
+        return;
+      }
+
       // Get the next available username in sequence
       const nextUsername = await getNextAvailableUsername();
       
@@ -117,14 +125,6 @@ function Login() {
       // Check if the entered username matches the expected next username
       if (username.trim() !== nextUsername) {
         setError(`Invalid username. Please try again.`);
-        setLoading(false);
-        return;
-      }
-
-      // Check if username is taken (double-check)
-      const exists = await checkUsernameExists(username);
-      if (exists) {
-        setError('Already logged in. Please use a different username.');
         setLoading(false);
         return;
       }
