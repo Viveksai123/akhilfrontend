@@ -25,7 +25,7 @@ const questions = {
     difficulty: 'medium',
     points: 170,
     description: 'Web exploitation refers to the practice of identifying and exploiting vulnerabilities in web applications, websites, and online services.',
-    link: "https://delicate-babka-d0d7b8.netlify.app/",
+    link: "https://dulcet-narwhal-fdef87.netlify.app/",
     // Hash for "CYB3RN3X4{th3_r0tt3n_secr3ts}" (normalized)
     answer: 'd4926f0cfe8a7fceb5780d8775f7e6673984953af67a83b38e7ed9ce360e3658',
     hints: [
@@ -41,7 +41,7 @@ const questions = {
     title: 'Find the Seal',
     difficulty: 'medium',
     points: 180,
-    description: "Extracting text from images involves using Optical Character Recognition (OCR) technology, which converts printed, handwritten, or digital text within an image into machine-readable text",
+    description: "This challenge invites participants to delve into the intricate world of digital forensics. Your mission is to uncover a concealed message encrypted within the EXIF data of a digital image. Hidden within the layers of metadata lies a flag, skillfully encoded and waiting to be discovered. Use your forensic expertise to navigate this complex digital tapestry and reveal the secret message. Are you ready to unravel the enigma?",
     link: 'https://drive.google.com/file/d/1BuhxuOo48xcj5ZpO3zKtqwMip3eCZRYC/view?usp=sharing',
     // Same as question 4
     answer: '55ee56ffca88287aa92cb6efdb21311799806aac6e16f6312167f2abd4d40b90',
@@ -174,7 +174,7 @@ const questions = {
     difficulty: 'hard',
     points: 300,
     description: "Something seems off... We found two strange image fragments, but they don’t make sense on their own. Can you figure out how to put them back together and reveal the hidden message?",
-    link: 'https://drive.google.com/file/d/1mliiNjwYSpgw9GZBPODkwvuak7gKzfUW/view?usp=sharing',
+    link: 'https://drive.google.com/file/d/1ItbIeg4L8eBmEAlxvwHoiFSqqlelHjRL/view?usp=sharing',
     answer: '5315fa562d5a69d349e6cefe5a41887ecd3eebfdbf9c4bba7e3e071f509b6242',
     hints: [
       "Try combining the image fragments—overlapping or merging might reveal hidden text.",
