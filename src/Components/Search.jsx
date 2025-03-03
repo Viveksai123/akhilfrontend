@@ -76,10 +76,10 @@ const questions = {
     link: 'https://drive.google.com/file/d/1OaAOQe1Eh8sdQFuut-ZRaa_dau7t4nn_/view?usp=sharing',
     answer: 'f82628a55243b23a663a0ab78e197e77e1c6e0da305f5307754a6d8199d225d8',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Look for layered encryption—common techniques include Base64, Hex, and XOR.",
+      "Decoding might require multiple transformations—analyze step by step.",
+      "Patterns and character distributions can help identify encryption methods."
+  ]  
 },
 '6': {
     id: '6',
@@ -90,10 +90,10 @@ const questions = {
     link: null,
     answer: '2f37a668e6cca2b63d5d428fccccf3af9a8e576b67a210be32777008fcb37d73',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "The Vigenère cipher uses a repeating keyword—identifying it is key to decryption.",
+      "Look for common words or patterns to help determine the cipher key.",
+      "Use online tools like dCode or CyberChef to simplify the Vigenère decryption process."
+  ]  
 },
 '7': {
     id: '7',
@@ -104,10 +104,10 @@ const questions = {
     link: 'https://drive.google.com/file/d/1cLC7I-N3S4QDed13lu6ieg94ugFwN2ZV/view?usp=sharing',
     answer: '0ecd32cedb88ad440027034e794b6e3f31931a939db37043e3e7dd077fb6f253',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Examine the metadata—hidden clues might be stored within the document properties.",
+      "Check for invisible text, embedded objects, or steganographic content.",
+      "Use tools like ExifTool, PDF-Parser, or CyberChef to analyze hidden data."
+  ]  
 },
 '8': {
     id: '8',
@@ -118,10 +118,11 @@ const questions = {
     link: 'https://drive.google.com/file/d/12OvPRCOPH1j_xvUihmyq5Ph5rfYpsI3v/view?usp=sharing',
     answer: '8a8b443e7b51093160335f29189d3e475a97b751932afe1ffdf542c08ad5f6c8',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Look for hashed or encoded data—common formats include MD5, SHA-1, and SHA-256.",
+      "Hex-encoded data might need conversion to ASCII or further decoding.",
+      "Use tools like CyberChef or Hashcat to analyze and break down the hex digest."
+  ]
+  
 },
 '9': {
     id: '9',
@@ -132,10 +133,10 @@ const questions = {
     link: null,
     answer: '39fa1a707c72cd545a510fb15e505287af0bf71e2445938bfc6ec6b9d7b53af9',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Start by searching for bhAAi on social media, forums, and public databases.",
+      "Analyze metadata in images or documents using tools like ExifTool or OSINT Framework.",
+      "Check for hidden messages in website source code, URLs, or archived pages."
+  ]  
 },
 '10': {
     id: '10',
@@ -146,10 +147,11 @@ const questions = {
     link: 'https://drive.google.com/file/d/1pZiGA6HO5VLSF7YumY0KMbgd0FZtfUSQ/view?usp=sharing',
     answer: '022f6e6cc918f979efc22d24bdb31a44b5874a2e28fb05782998bb58b058e786',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Look for a key or pattern at the start of the message—it might guide decryption.",
+      "It could be a substitution cipher like Caesar, Atbash, or a custom mapping.",
+      "Use frequency analysis or online tools like dCode to identify letter substitutions."
+  ]
+  
 },
 '11': {
     id: '11',
@@ -160,10 +162,11 @@ const questions = {
     link: 'https://drive.google.com/file/d/1fUQutBY4GNldE8hhg1b30JjxL-xxyknw/view?usp=sharing',
     answer: '3f80b85565e980680027b270a86300275a58c76903b4ed8882a6f5c23ba74610',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Look for a combination of encoding methods like Base64, Hex, or Binary.",
+      "Transposition ciphers might involve letter shifting or rearrangement.",
+      "Break it down step by step—decoding in the wrong order may lead to gibberish."
+  ]
+  
 },
 '12': {
     id: '12',
@@ -174,10 +177,10 @@ const questions = {
     link: 'https://drive.google.com/file/d/1mliiNjwYSpgw9GZBPODkwvuak7gKzfUW/view?usp=sharing',
     answer: '5315fa562d5a69d349e6cefe5a41887ecd3eebfdbf9c4bba7e3e071f509b6242',
     hints: [
-      "Try applying ROT13 decryption to the given text",
-      "Not all characters may be encoded—focus on the alphanumeric parts",
-      "Explore other ROT-based ciphers if ROT13 doesn’t fully decode it"
-    ]
+      "Try combining the image fragments—overlapping or merging might reveal hidden text.",
+      "Check for steganography techniques using tools like StegSolve or OpenStego.",
+      "Analyze the image metadata—use ExifTool to find any embedded clues."
+  ]  
 },
 };
 
