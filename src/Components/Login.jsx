@@ -124,7 +124,7 @@ function Login() {
       // Check if username is taken (double-check)
       const exists = await checkUsernameExists(username);
       if (exists) {
-        setError('Username already taken. Please choose another.');
+        setError('Already logged in. Please use a different username.');
         setLoading(false);
         return;
       }
@@ -132,9 +132,9 @@ function Login() {
       // Sign in anonymously
       const { user } = await signInAnonymously(auth);
       
-      // Set up session time (5 minutes from now)
+      // Set up session time (40 minutes from now)
       const startTime = new Date();
-      const endTime = new Date(startTime.getTime() + 5 * 60 * 1000); // 5 minutes
+      const endTime = new Date(startTime.getTime() + 40 * 60 * 1000); // 40 minutes
 
       // Create user document
       await setDoc(doc(db, 'users', user.uid), {
@@ -154,7 +154,7 @@ function Login() {
       setTimeout(() => {
         auth.signOut();
         navigate('/game-over');
-      }, 5 * 60 * 1000); // 5 minutes
+      }, 40 * 60 * 1000); // 40 minutes
 
       navigate('/');
     } catch (error) {
@@ -228,7 +228,7 @@ function Login() {
       
       <div className="welcome-section">
         <h1 className="welcome-title">CTF CYB3R AR3NA</h1>
-        <p className="welcome-subtitle">You have 5 minutes to complete the challenge</p>
+        <p className="welcome-subtitle">You have 40 minutes to complete the challenge</p>
         <p className="sequence-info">Next available username: {nextAvailable}</p>
       </div>
 

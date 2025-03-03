@@ -5,7 +5,7 @@ import { auth, db } from '../firebase';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 function Navbar() {
-  const [timeRemaining, setTimeRemaining] = useState('5:00');
+  const [timeRemaining, setTimeRemaining] = useState('40:00');
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
