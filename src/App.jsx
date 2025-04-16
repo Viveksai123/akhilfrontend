@@ -39,38 +39,38 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  useEffect(() => {
-    // Disable right-click
-    const disableRightClick = (event) => event.preventDefault();
-    document.addEventListener("contextmenu", disableRightClick);
+  // useEffect(() => {
+  //   // Disable right-click
+  //   const disableRightClick = (event) => event.preventDefault();
+  //   document.addEventListener("contextmenu", disableRightClick);
 
-    // Disable Function Keys, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, etc.
-    const disableShortcuts = (event) => {
-      if (
-        event.key.startsWith("F") || // Disables all Function keys (F1–F12)
-        (event.ctrlKey && event.shiftKey && event.key === "I") || // Ctrl+Shift+I
-        (event.ctrlKey && event.shiftKey && event.key === "J") || // Ctrl+Shift+J
-        (event.ctrlKey && event.key === "U") || // Ctrl+U (View Source)
-        (event.ctrlKey && event.key === "S") || // Ctrl+S (Save Page)
-        (event.ctrlKey && event.key === "H") || // Ctrl+H (History)
-        (event.ctrlKey && event.key === "A") // Ctrl+A (Select All)
-      ) {
-        event.preventDefault();
-      }
-    };
-    document.addEventListener("keydown", disableShortcuts);
+  //   // Disable Function Keys, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, etc.
+  //   const disableShortcuts = (event) => {
+  //     if (
+  //       event.key.startsWith("F") || // Disables all Function keys (F1–F12)
+  //       (event.ctrlKey && event.shiftKey && event.key === "I") || // Ctrl+Shift+I
+  //       (event.ctrlKey && event.shiftKey && event.key === "J") || // Ctrl+Shift+J
+  //       (event.ctrlKey && event.key === "U") || // Ctrl+U (View Source)
+  //       (event.ctrlKey && event.key === "S") || // Ctrl+S (Save Page)
+  //       (event.ctrlKey && event.key === "H") || // Ctrl+H (History)
+  //       (event.ctrlKey && event.key === "A") // Ctrl+A (Select All)
+  //     ) {
+  //       event.preventDefault();
+  //     }
+  //   };
+  //   document.addEventListener("keydown", disableShortcuts);
 
-    // Anti-DevTools trick
-    const antiDebug = setInterval(() => {
-      debugger;
-    }, 100);
+  //   // Anti-DevTools trick
+  //   const antiDebug = setInterval(() => {
+  //     debugger;
+  //   }, 100);
 
-    return () => {
-      document.removeEventListener("contextmenu", disableRightClick);
-      document.removeEventListener("keydown", disableShortcuts);
-      clearInterval(antiDebug);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("contextmenu", disableRightClick);
+  //     document.removeEventListener("keydown", disableShortcuts);
+  //     clearInterval(antiDebug);
+  //   };
+  // }, []);
 
   return (
     <Router>
